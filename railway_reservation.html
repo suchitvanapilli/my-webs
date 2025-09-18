@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Railway - Book Your Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .train-animation {
+            animation: trainMove 3s ease-in-out infinite;
+        }
+
+        @keyframes trainMove {
+            0%, 100% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+
+        .booking-card {
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+
+        .input-focus:focus {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .train-track {
+            background: linear-gradient(90deg, #e5e7eb 0%, #9ca3af 50%, #e5e7eb 100%);
+            height: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .train-track::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, #ff6600 50%, transparent 100%);
+            animation: trackGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes trackGlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .ticket-animation {
+            animation: ticketFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes ticketFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        .success-bounce {
+            animation: successBounce 0.6s ease-out;
+        }
+
+        @keyframes successBounce {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .seat {
+            width: 40px;
+            height: 40px;
+            margin: 2px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .seat.available {
+            background-color: #e5f3ff;
+            border: 2px solid #ff6600;
+            color: #ff6600;
+        }
+
+        .seat.available:hover {
+            background-color: #ff6600;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .seat.selected {
+            background-color: #10b981;
+            border: 2px solid #059669;
+            color: white;
+            animation: seatSelect 0.3s ease-out;
+        }
+
+        .seat.occupied {
+            background-color: #fca5a5;
+            border: 2px solid #dc2626;
+            color: #dc2626;
+            cursor: not-allowed;
+        }
+
+        @keyframes seatSelect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .train-coach {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            background-color: #ff6600;
+            color: white;
+        }
+
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background-color: #ff6600;
+            color: white;
+        }
+
+        .ticket-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+            border-left: 4px solid #ff6600;
+        }
+
+        .cancelled-ticket {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+            border-left: 4px solid #dc2626;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 to-red-100 min-h-screen">
+    <!-- Login/Register Page -->
+    <div id="authPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8 fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-orange-600 rounded-full mb-4 pulse-glow">
+                    <svg class="w-10 h-10 text-white train-animation" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.5-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V7h12v4z"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Indian Railway</h1>
+                <p class="text-gray-600">Your journey across India begins here</p>
+                <div class="train-track mt-4 mx-auto w-32"></div>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="bg-white rounded-2xl shadow-xl p-8 booking-card slide-in-left">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Sign In</h2>
+                <form id="loginFormElement" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="loginEmail" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Enter your email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="loginPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Enter your password">
+                    </div>
+                    <button type="submit" 
+                            class="w-full bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium pulse-glow">
+                        Sign In to Book
+                    </button>
+                </form>
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Don't have an account? 
+                        <button onclick="showRegister()" class="text-orange-600 hover:text-orange-800 font-medium">Register here</button>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden bg-white rounded-2xl shadow-xl p-8 booking-card slide-in-right">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create Account</h2>
+                <form id="registerFormElement" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text" id="regFirstName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="First name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text" id="regLastName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="Last name">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="regEmail" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Enter your email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="regPhone" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Enter phone number">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="regPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Create password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <input type="password" id="regConfirmPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                               placeholder="Confirm password">
+                    </div>
+                    <button type="submit" 
+                            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                        Create Account
+                    </button>
+                </form>
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Already have an account? 
+                        <button onclick="showLogin()" class="text-orange-600 hover:text-orange-800 font-medium">Sign in here</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Booking Page -->
+    <div id="bookingPage" class="hidden min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.5-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V7h12v4z"/>
+                                </svg>
+                            </div>
+                            <h1 class="text-xl font-bold text-gray-800">Indian Railway</h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="welcomeUser" class="text-gray-600">Welcome back!</span>
+                        <button onclick="logout()" class="text-orange-600 hover:text-orange-800 font-medium">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex space-x-4">
+                <button onclick="showBookingSection()" id="bookingTab" class="nav-tab active px-6 py-3 rounded-lg font-medium transition-all">
+                    Book Ticket
+                </button>
+                <button onclick="showMyTicketsSection()" id="ticketsTab" class="nav-tab px-6 py-3 rounded-lg font-medium transition-all bg-gray-200 text-gray-700 hover:bg-gray-300">
+                    My Tickets
+                </button>
+            </div>
+        </div>
+
+        <!-- Booking Section -->
+        <div id="bookingSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <!-- Progress Steps -->
+            <div class="flex items-center justify-center space-x-2 mb-8 overflow-x-auto">
+                <div class="step-indicator active w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                <div class="w-8 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">2</div>
+                <div class="w-8 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">3</div>
+                <div class="w-8 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">4</div>
+                <div class="w-8 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">5</div>
+                <div class="w-8 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium">6</div>
+            </div>
+
+            <!-- Step 1: Search Form -->
+            <div id="step1" class="bg-white rounded-2xl shadow-xl p-8 mb-8 booking-card fade-in">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Search Trains
+                </h2>
+                
+                <form id="searchForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">From</label>
+                        <select id="fromStation" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus">
+                            <option value="">Select departure</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">To</label>
+                        <select id="toStation" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus">
+                            <option value="">Select destination</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Departure Date</label>
+                        <input type="date" id="departureDate" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
+                        <select id="passengers" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus">
+                            <option value="1">1 Passenger</option>
+                            <option value="2">2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4 Passengers</option>
+                            <option value="5">5 Passengers</option>
+                            <option value="6">6 Passengers</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium pulse-glow">
+                            Search Trains
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: Train Selection -->
+            <div id="step2" class="hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Available Trains</h3>
+                <div id="trainList" class="space-y-4 mb-6"></div>
+            </div>
+
+            <!-- Step 3: Passenger Details -->
+            <div id="step3" class="hidden bg-white rounded-2xl shadow-xl p-8 booking-card">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Passenger Details</h3>
+                <div id="passengerForms"></div>
+                <button onclick="proceedToSeatSelection()" class="w-full bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium mt-6">
+                    Continue to Seat Selection
+                </button>
+            </div>
+
+            <!-- Step 4: Seat Selection -->
+            <div id="step4" class="hidden bg-white rounded-2xl shadow-xl p-8 booking-card">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Select Your Seats</h3>
+                
+                <!-- Class Selection -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Choose Train Class</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="class-option border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-all" data-class="sleeper">
+                            <h5 class="font-semibold text-gray-800">Sleeper Class (SL)</h5>
+                            <p class="text-sm text-gray-600">Basic comfort, shared compartments</p>
+                            <p class="text-lg font-bold text-orange-600 mt-2">+₹0</p>
+                        </div>
+                        <div class="class-option border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-all" data-class="ac">
+                            <h5 class="font-semibold text-gray-800">AC 3 Tier (3A)</h5>
+                            <p class="text-sm text-gray-600">Air conditioned, comfortable berths</p>
+                            <p class="text-lg font-bold text-orange-600 mt-2">+₹500</p>
+                        </div>
+                        <div class="class-option border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-all" data-class="first">
+                            <h5 class="font-semibold text-gray-800">AC 2 Tier (2A)</h5>
+                            <p class="text-sm text-gray-600">Premium comfort, private cabins</p>
+                            <p class="text-lg font-bold text-orange-600 mt-2">+₹1200</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seat Map -->
+                <div id="seatMap" class="mb-6">
+                    <div class="train-coach">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4 text-center">Coach S1</h4>
+                        <div class="flex justify-center mb-4">
+                            <div class="flex items-center space-x-4 text-sm">
+                                <div class="flex items-center">
+                                    <div class="seat available mr-2"></div>
+                                    <span>Available</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="seat selected mr-2"></div>
+                                    <span>Selected</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="seat occupied mr-2"></div>
+                                    <span>Occupied</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="seatGrid" class="flex flex-wrap justify-center"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm text-gray-600">Selected Seats: <span id="selectedSeats" class="font-medium"></span></p>
+                        <p class="text-lg font-bold text-orange-600">Total: ₹<span id="totalPrice">0</span></p>
+                    </div>
+                    <button onclick="showFinalConfirmation()" id="confirmBookingBtn" class="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Review & Confirm
+                    </button>
+                </div>
+            </div>
+
+            <!-- Booking Confirmation -->
+            <div id="bookingConfirmation" class="hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-8 booking-card success-bounce">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Booking Confirmed!</h3>
+                        <p class="text-gray-600 mb-6">Your train tickets have been successfully booked.</p>
+                        
+                        <div class="bg-orange-50 rounded-lg p-6 mb-6 ticket-animation">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-sm font-medium text-orange-600">IRCTC TICKET</span>
+                                <span id="ticketNumber" class="text-sm font-mono text-gray-600"></span>
+                            </div>
+                            <div id="ticketDetails" class="text-left space-y-2"></div>
+                        </div>
+                        
+                        <button onclick="newSearch()" class="bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium mr-4">
+                            Book Another Journey
+                        </button>
+                        <button onclick="showMyTicketsSection()" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium">
+                            View My Tickets
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Tickets Section -->
+        <div id="myTicketsSection" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8 booking-card">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                    </svg>
+                    My Tickets
+                </h2>
+                
+                <div id="ticketsList" class="space-y-4">
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                        </svg>
+                        <p class="text-lg">No tickets booked yet</p>
+                        <p class="text-sm">Book your first journey to see tickets here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Indian cities data
+        const indianCities = [
+            // Major cities across different states
+            "Mumbai, Maharashtra", "Delhi, Delhi", "Bangalore, Karnataka", "Hyderabad, Telangana",
+            "Ahmedabad, Gujarat", "Chennai, Tamil Nadu", "Kolkata, West Bengal", "Surat, Gujarat",
+            "Pune, Maharashtra", "Jaipur, Rajasthan", "Lucknow, Uttar Pradesh", "Kanpur, Uttar Pradesh",
+            "Nagpur, Maharashtra", "Indore, Madhya Pradesh", "Thane, Maharashtra", "Bhopal, Madhya Pradesh",
+            "Visakhapatnam, Andhra Pradesh", "Pimpri-Chinchwad, Maharashtra", "Patna, Bihar", "Vadodara, Gujarat",
+            "Ghaziabad, Uttar Pradesh", "Ludhiana, Punjab", "Agra, Uttar Pradesh", "Nashik, Maharashtra",
+            "Faridabad, Haryana", "Meerut, Uttar Pradesh", "Rajkot, Gujarat", "Kalyan-Dombivli, Maharashtra",
+            "Vasai-Virar, Maharashtra", "Varanasi, Uttar Pradesh", "Srinagar, Jammu and Kashmir", "Aurangabad, Maharashtra",
+            "Dhanbad, Jharkhand", "Amritsar, Punjab", "Navi Mumbai, Maharashtra", "Allahabad, Uttar Pradesh",
+            "Ranchi, Jharkhand", "Howrah, West Bengal", "Coimbatore, Tamil Nadu", "Jabalpur, Madhya Pradesh",
+            "Gwalior, Madhya Pradesh", "Vijayawada, Andhra Pradesh", "Jodhpur, Rajasthan", "Madurai, Tamil Nadu",
+            "Raipur, Chhattisgarh", "Kota, Rajasthan", "Chandigarh, Chandigarh", "Guwahati, Assam",
+            "Solapur, Maharashtra", "Hubli-Dharwad, Karnataka", "Tiruchirappalli, Tamil Nadu", "Bareilly, Uttar Pradesh",
+            "Mysore, Karnataka", "Tiruppur, Tamil Nadu", "Gurgaon, Haryana", "Aligarh, Uttar Pradesh",
+            "Jalandhar, Punjab", "Bhubaneswar, Odisha", "Salem, Tamil Nadu", "Warangal, Telangana",
+            "Guntur, Andhra Pradesh", "Bhiwandi, Maharashtra", "Saharanpur, Uttar Pradesh", "Gorakhpur, Uttar Pradesh",
+            "Bikaner, Rajasthan", "Amravati, Maharashtra", "Noida, Uttar Pradesh", "Jamshedpur, Jharkhand",
+            "Bhilai, Chhattisgarh", "Cuttack, Odisha", "Firozabad, Uttar Pradesh", "Kochi, Kerala",
+            "Nellore, Andhra Pradesh", "Bhavnagar, Gujarat", "Dehradun, Uttarakhand", "Durgapur, West Bengal",
+            "Asansol, West Bengal", "Rourkela, Odisha", "Nanded, Maharashtra", "Kolhapur, Maharashtra",
+            "Ajmer, Rajasthan", "Akola, Maharashtra", "Gulbarga, Karnataka", "Jamnagar, Gujarat",
+            "Ujjain, Madhya Pradesh", "Loni, Uttar Pradesh", "Siliguri, West Bengal", "Jhansi, Uttar Pradesh",
+            "Ulhasnagar, Maharashtra", "Jammu, Jammu and Kashmir", "Sangli-Miraj & Kupwad, Maharashtra", "Mangalore, Karnataka",
+            "Erode, Tamil Nadu", "Belgaum, Karnataka", "Ambattur, Tamil Nadu", "Tirunelveli, Tamil Nadu",
+            "Malegaon, Maharashtra", "Gaya, Bihar", "Jalgaon, Maharashtra", "Udaipur, Rajasthan",
+            "Maheshtala, West Bengal", "Davanagere, Karnataka", "Kozhikode, Kerala", "Kurnool, Andhra Pradesh",
+            "Rajpur Sonarpur, West Bengal", "Rajahmundry, Andhra Pradesh", "Bokaro, Jharkhand", "South Dumdum, West Bengal",
+            "Bellary, Karnataka", "Patiala, Punjab", "Gopalpur, Odisha", "Agartala, Tripura",
+            "Bhagalpur, Bihar", "Muzaffarnagar, Uttar Pradesh", "Bhatpara, West Bengal", "Panihati, West Bengal",
+            "Latur, Maharashtra", "Dhule, Maharashtra", "Rohtak, Haryana", "Korba, Chhattisgarh",
+            "Bhilwara, Rajasthan", "Berhampur, Odisha", "Muzaffarpur, Bihar", "Ahmednagar, Maharashtra",
+            "Mathura, Uttar Pradesh", "Kollam, Kerala", "Avadi, Tamil Nadu", "Kadapa, Andhra Pradesh",
+            "Kamarhati, West Bengal", "Sambalpur, Odisha", "Bilaspur, Chhattisgarh", "Shahjahanpur, Uttar Pradesh",
+            "Satara, Maharashtra", "Bijapur, Karnataka", "Rampur, Uttar Pradesh", "Shivamogga, Karnataka",
+            "Chandrapur, Maharashtra", "Junagadh, Gujarat", "Thrissur, Kerala", "Alwar, Rajasthan",
+            "Bardhaman, West Bengal", "Kulti, West Bengal", "Kakinada, Andhra Pradesh", "Nizamabad, Telangana",
+            "Parbhani, Maharashtra", "Tumkur, Karnataka", "Khammam, Telangana", "Ozhukarai, Puducherry",
+            "Bihar Sharif, Bihar", "Panipat, Haryana", "Darbhanga, Bihar", "Bally, West Bengal",
+            "Aizawl, Mizoram", "Dewas, Madhya Pradesh", "Ichalkaranji, Maharashtra", "Karnal, Haryana",
+            "Bathinda, Punjab", "Jalna, Maharashtra", "Eluru, Andhra Pradesh", "Kirari Suleman Nagar, Delhi",
+            "Barabanki, Uttar Pradesh", "Purnia, Bihar", "Satna, Madhya Pradesh", "Mau, Uttar Pradesh",
+            "Sonipat, Haryana", "Farrukhabad, Uttar Pradesh", "Sagar, Madhya Pradesh", "Rourkela, Odisha",
+            "Durg, Chhattisgarh", "Imphal, Manipur", "Ratlam, Madhya Pradesh", "Hapur, Uttar Pradesh",
+            "Arrah, Bihar", "Anantapur, Andhra Pradesh", "Karimnagar, Telangana", "Etawah, Uttar Pradesh",
+            "Ambarnath, Maharashtra", "North Dumdum, West Bengal", "Bharatpur, Rajasthan", "Begusarai, Bihar",
+            "New Delhi, Delhi", "Chhapra, Bihar", "Kadapa, Andhra Pradesh", "Ramagundam, Telangana",
+            "Pali, Rajasthan", "Barmer, Rajasthan", "Udupi, Karnataka", "Proddatur, Andhra Pradesh",
+            "Mahbubnagar, Telangana", "Saharsa, Bihar", "Dibrugarh, Assam", "Jorhat, Assam",
+            "Hazaribagh, Jharkhand", "Hindupur, Andhra Pradesh", "Nagaon, Assam", "Sasaram, Bihar",
+            "Hajipur, Bihar", "Bhusawal, Maharashtra", "Orai, Uttar Pradesh", "Kadapa, Andhra Pradesh",
+            "Kishanganj, Bihar", "Suryapet, Telangana", "Jamalpur, Bihar", "Kavali, Andhra Pradesh",
+            "Tadepalligudem, Andhra Pradesh", "Amaravati, Andhra Pradesh", "Buxar, Bihar", "Jehanabad, Bihar",
+            "Aurangabad, Bihar", "Mirzapur, Uttar Pradesh", "Raebareli, Uttar Pradesh", "Gonda, Uttar Pradesh",
+            "Sitamarhi, Bihar", "Nalanda, Bihar", "Damoh, Madhya Pradesh", "Srikakulam, Andhra Pradesh",
+            "Motihari, Bihar", "Dharmapuri, Tamil Nadu", "Gudivada, Andhra Pradesh", "Narasaraopet, Andhra Pradesh",
+            "Bagalkot, Karnataka", "Miryalaguda, Telangana", "Tadipatri, Andhra Pradesh", "Kishanganj, Bihar",
+            "Karaikudi, Tamil Nadu", "Suryapet, Telangana", "Jamalpur, Bihar", "Kavali, Andhra Pradesh"
+        ];
+
+        // Global variables
+        let registeredUsers = JSON.parse(localStorage.getItem('railwayUsers') || '[]');
+        let userBookings = JSON.parse(localStorage.getItem('userBookings') || '{}');
+        let currentUser = null;
+        let selectedTrain = null;
+        let selectedClass = 'sleeper';
+        let selectedSeats = [];
+        let passengerDetails = [];
+        let bookingData = {};
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            populateStations();
+            document.getElementById('departureDate').min = new Date().toISOString().split('T')[0];
+        });
+
+        // Populate station dropdowns
+        function populateStations() {
+            const fromSelect = document.getElementById('fromStation');
+            const toSelect = document.getElementById('toStation');
+            
+            indianCities.forEach(city => {
+                const option1 = document.createElement('option');
+                option1.value = city;
+                option1.textContent = city;
+                fromSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = city;
+                option2.textContent = city;
+                toSelect.appendChild(option2);
+            });
+        }
+
+        // Sample train data with Indian train names and pricing
+        const trains = [
+            { id: 1, name: "Rajdhani Express", number: "12001", departure: "06:00", arrival: "14:30", duration: "8h 30m", price: 1250 },
+            { id: 2, name: "Shatabdi Express", number: "12002", departure: "08:15", arrival: "16:45", duration: "8h 30m", price: 980 },
+            { id: 3, name: "Duronto Express", number: "12259", departure: "14:20", arrival: "21:50", duration: "7h 30m", price: 1450 },
+            { id: 4, name: "Garib Rath", number: "12909", departure: "18:00", arrival: "04:45", duration: "10h 45m", price: 750 },
+            { id: 5, name: "Jan Shatabdi", number: "12023", departure: "11:30", arrival: "19:15", duration: "7h 45m", price: 650 },
+            { id: 6, name: "Superfast Express", number: "12627", departure: "22:15", arrival: "08:30", duration: "10h 15m", price: 890 }
+        ];
+
+        // Authentication functions
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        // Register form handler
+        document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (registeredUsers.find(user => user.email === email)) {
+                alert('Email already registered!');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                firstName,
+                lastName,
+                email,
+                phone,
+                password
+            };
+            
+            registeredUsers.push(newUser);
+            localStorage.setItem('railwayUsers', JSON.stringify(registeredUsers));
+            
+            alert('Registration successful! Please sign in.');
+            showLogin();
+            document.getElementById('registerFormElement').reset();
+        });
+
+        // Login form handler
+        document.getElementById('loginFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = registeredUsers.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                document.getElementById('authPage').classList.add('hidden');
+                document.getElementById('bookingPage').classList.remove('hidden');
+                document.getElementById('welcomeUser').textContent = `Welcome, ${user.firstName}!`;
+                showBookingSection();
+            } else {
+                alert('Invalid credentials. Please register first or check your login details.');
+            }
+        });
+
+        // Navigation functions
+        function showBookingSection() {
+            document.getElementById('bookingSection').classList.remove('hidden');
+            document.getElementById('myTicketsSection').classList.add('hidden');
+            document.getElementById('bookingTab').classList.add('active');
+            document.getElementById('bookingTab').classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('ticketsTab').classList.remove('active');
+            document.getElementById('ticketsTab').classList.add('bg-gray-200', 'text-gray-700');
+        }
+
+        function showMyTicketsSection() {
+            document.getElementById('bookingSection').classList.add('hidden');
+            document.getElementById('myTicketsSection').classList.remove('hidden');
+            document.getElementById('ticketsTab').classList.add('active');
+            document.getElementById('ticketsTab').classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('bookingTab').classList.remove('active');
+            document.getElementById('bookingTab').classList.add('bg-gray-200', 'text-gray-700');
+            loadUserTickets();
+        }
+
+        // Search functionality
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const from = document.getElementById('fromStation').value;
+            const to = document.getElementById('toStation').value;
+            const date = document.getElementById('departureDate').value;
+            const passengers = document.getElementById('passengers').value;
+            
+            if (from === to) {
+                alert('Please select different departure and destination stations.');
+                return;
+            }
+            
+            bookingData = { from, to, date, passengers };
+            displaySearchResults();
+            updateStepIndicator(2);
+        });
+
+        function displaySearchResults() {
+            const trainList = document.getElementById('trainList');
+            trainList.innerHTML = '';
+            
+            trains.forEach(train => {
+                const trainCard = document.createElement('div');
+                trainCard.className = 'bg-white rounded-xl shadow-lg p-6 booking-card slide-in-left';
+                trainCard.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <h4 class="text-lg font-semibold text-gray-800">${train.name}</h4>
+                                <span class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">${train.number}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 mb-2">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>${train.departure} → ${train.arrival} (${train.duration})</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <span>${bookingData.from.split(',')[0]} → ${bookingData.to.split(',')[0]}</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 md:mt-0 md:ml-6 text-right">
+                            <div class="text-2xl font-bold text-orange-600 mb-2">₹${train.price}</div>
+                            <div class="text-sm text-gray-500 mb-3">per passenger</div>
+                            <button onclick="selectTrain(${train.id})" 
+                                    class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium">
+                                Select Train
+                            </button>
+                        </div>
+                    </div>
+                `;
+                trainList.appendChild(trainCard);
+            });
+            
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        function selectTrain(trainId) {
+            selectedTrain = trains.find(t => t.id === trainId);
+            showPassengerDetails();
+            updateStepIndicator(3);
+        }
+
+        function showPassengerDetails() {
+            const passengerForms = document.getElementById('passengerForms');
+            const passengerCount = parseInt(bookingData.passengers);
+            
+            passengerForms.innerHTML = `
+                <div class="mb-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Passenger Management</h4>
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <button onclick="showAddNewPassenger()" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                            Add New Passenger
+                        </button>
+                        <button onclick="showExistingPassengers()" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium">
+                            Select Existing Passenger
+                        </button>
+                    </div>
+                </div>
+                <div id="passengerInputArea"></div>
+                <div id="selectedPassengersList" class="mb-6"></div>
+            `;
+            
+            // Initialize passenger selection
+            initializePassengerSelection();
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+
+        function initializePassengerSelection() {
+            passengerDetails = [];
+            updateSelectedPassengersList();
+            showAddNewPassenger();
+        }
+
+        function showAddNewPassenger() {
+            const inputArea = document.getElementById('passengerInputArea');
+            inputArea.innerHTML = `
+                <div class="border border-gray-200 rounded-lg p-6 mb-4">
+                    <h5 class="text-md font-semibold text-gray-800 mb-4">Add New Passenger</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" id="newPassengerName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="Enter full name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Age *</label>
+                            <input type="number" id="newPassengerAge" required min="1" max="120"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="Enter age">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+                            <select id="newPassengerGender" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus">
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mobile Number *</label>
+                            <input type="tel" id="newPassengerMobile" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="Enter mobile number">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" id="newPassengerEmail" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent input-focus"
+                                   placeholder="Enter email address">
+                        </div>
+                    </div>
+                    <button onclick="addNewPassenger()" class="mt-4 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                        Add Passenger
+                    </button>
+                </div>
+            `;
+        }
+
+        function showExistingPassengers() {
+            const savedPassengers = JSON.parse(localStorage.getItem('savedPassengers') || '[]');
+            const userPassengers = savedPassengers.filter(p => p.userId === currentUser.id);
+            
+            const inputArea = document.getElementById('passengerInputArea');
+            
+            if (userPassengers.length === 0) {
+                inputArea.innerHTML = `
+                    <div class="border border-gray-200 rounded-lg p-6 mb-4 text-center">
+                        <p class="text-gray-600">No saved passengers found. Add a new passenger first.</p>
+                        <button onclick="showAddNewPassenger()" class="mt-2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                            Add New Passenger
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            inputArea.innerHTML = `
+                <div class="border border-gray-200 rounded-lg p-6 mb-4">
+                    <h5 class="text-md font-semibold text-gray-800 mb-4">Select Existing Passengers</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${userPassengers.map(passenger => `
+                            <div class="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-all passenger-card" 
+                                 onclick="selectExistingPassenger('${passenger.id}')">
+                                <h6 class="font-semibold text-gray-800">${passenger.name}</h6>
+                                <p class="text-sm text-gray-600">${passenger.age} years, ${passenger.gender}</p>
+                                <p class="text-sm text-gray-600">${passenger.mobile}</p>
+                                <p class="text-sm text-gray-600">${passenger.email}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function addNewPassenger() {
+            const name = document.getElementById('newPassengerName').value;
+            const age = document.getElementById('newPassengerAge').value;
+            const gender = document.getElementById('newPassengerGender').value;
+            const mobile = document.getElementById('newPassengerMobile').value;
+            const email = document.getElementById('newPassengerEmail').value;
+            
+            if (!name || !age || !gender || !mobile || !email) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            if (passengerDetails.length >= parseInt(bookingData.passengers)) {
+                alert(`You can only add ${bookingData.passengers} passenger(s)`);
+                return;
+            }
+            
+            const passenger = {
+                id: Date.now().toString(),
+                name,
+                age,
+                gender,
+                mobile,
+                email,
+                userId: currentUser.id
+            };
+            
+            // Save passenger for future use
+            const savedPassengers = JSON.parse(localStorage.getItem('savedPassengers') || '[]');
+            savedPassengers.push(passenger);
+            localStorage.setItem('savedPassengers', JSON.stringify(savedPassengers));
+            
+            // Add to current booking
+            passengerDetails.push(passenger);
+            updateSelectedPassengersList();
+            
+            // Clear form
+            document.getElementById('newPassengerName').value = '';
+            document.getElementById('newPassengerAge').value = '';
+            document.getElementById('newPassengerGender').value = '';
+            document.getElementById('newPassengerMobile').value = '';
+            document.getElementById('newPassengerEmail').value = '';
+        }
+
+        function selectExistingPassenger(passengerId) {
+            if (passengerDetails.length >= parseInt(bookingData.passengers)) {
+                alert(`You can only select ${bookingData.passengers} passenger(s)`);
+                return;
+            }
+            
+            const savedPassengers = JSON.parse(localStorage.getItem('savedPassengers') || '[]');
+            const passenger = savedPassengers.find(p => p.id === passengerId);
+            
+            if (passenger && !passengerDetails.find(p => p.id === passengerId)) {
+                passengerDetails.push(passenger);
+                updateSelectedPassengersList();
+            }
+        }
+
+        function updateSelectedPassengersList() {
+            const listContainer = document.getElementById('selectedPassengersList');
+            const remainingSlots = parseInt(bookingData.passengers) - passengerDetails.length;
+            
+            listContainer.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h5 class="text-md font-semibold text-gray-800 mb-3">Selected Passengers (${passengerDetails.length}/${bookingData.passengers})</h5>
+                    ${passengerDetails.length === 0 ? 
+                        '<p class="text-gray-600 text-sm">No passengers selected yet</p>' :
+                        passengerDetails.map((passenger, index) => `
+                            <div class="flex justify-between items-center bg-white rounded-lg p-3 mb-2">
+                                <div>
+                                    <p class="font-medium text-gray-800">${passenger.name}</p>
+                                    <p class="text-sm text-gray-600">${passenger.age} years, ${passenger.gender}</p>
+                                    <p class="text-sm text-gray-600">${passenger.mobile} | ${passenger.email}</p>
+                                </div>
+                                <button onclick="removePassenger(${index})" class="text-red-600 hover:text-red-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        `).join('')
+                    }
+                    ${remainingSlots > 0 ? `<p class="text-sm text-orange-600 mt-2">Please add ${remainingSlots} more passenger(s)</p>` : ''}
+                </div>
+                ${passengerDetails.length === parseInt(bookingData.passengers) ? `
+                    <button onclick="proceedToJourneyReview()" class="w-full bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium mt-4">
+                        Review Journey Details
+                    </button>
+                ` : ''}
+            `;
+        }
+
+        function removePassenger(index) {
+            passengerDetails.splice(index, 1);
+            updateSelectedPassengersList();
+        }
+
+        function proceedToJourneyReview() {
+            showJourneyReview();
+            updateStepIndicator(4);
+        }
+
+        function showJourneyReview() {
+            const reviewContainer = document.createElement('div');
+            reviewContainer.id = 'journeyReview';
+            reviewContainer.className = 'bg-white rounded-2xl shadow-xl p-8 booking-card mb-8';
+            
+            const basePrice = selectedTrain.price * passengerDetails.length;
+            
+            reviewContainer.innerHTML = `
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Review Journey Details
+                </h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Journey Information -->
+                    <div class="space-y-6">
+                        <div class="bg-orange-50 rounded-lg p-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Journey Information</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Train:</span>
+                                    <span class="font-medium">${selectedTrain.name} (${selectedTrain.number})</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">From:</span>
+                                    <span class="font-medium">${bookingData.from}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">To:</span>
+                                    <span class="font-medium">${bookingData.to}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Date:</span>
+                                    <span class="font-medium">${new Date(bookingData.date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Departure:</span>
+                                    <span class="font-medium">${selectedTrain.departure}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Arrival:</span>
+                                    <span class="font-medium">${selectedTrain.arrival}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Duration:</span>
+                                    <span class="font-medium">${selectedTrain.duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 rounded-lg p-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Fare Details</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Base Fare (${passengerDetails.length} passengers):</span>
+                                    <span class="font-medium">₹${basePrice}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Reservation Charges:</span>
+                                    <span class="font-medium">₹${passengerDetails.length * 40}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Service Tax:</span>
+                                    <span class="font-medium">₹${Math.round(basePrice * 0.05)}</span>
+                                </div>
+                                <div class="border-t pt-2 mt-2">
+                                    <div class="flex justify-between text-lg font-bold text-orange-600">
+                                        <span>Total Amount:</span>
+                                        <span>₹${basePrice + (passengerDetails.length * 40) + Math.round(basePrice * 0.05)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Passenger Information -->
+                    <div>
+                        <div class="bg-green-50 rounded-lg p-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Passenger Details</h4>
+                            <div class="space-y-4">
+                                ${passengerDetails.map((passenger, index) => `
+                                    <div class="bg-white rounded-lg p-4 border border-green-200">
+                                        <h5 class="font-semibold text-gray-800">Passenger ${index + 1}</h5>
+                                        <p class="text-sm text-gray-600">${passenger.name}</p>
+                                        <p class="text-sm text-gray-600">${passenger.age} years, ${passenger.gender}</p>
+                                        <p class="text-sm text-gray-600">${passenger.mobile}</p>
+                                        <p class="text-sm text-gray-600">${passenger.email}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-8">
+                    <button onclick="goBackToPassengers()" class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium">
+                        Back to Passengers
+                    </button>
+                    <button onclick="proceedToSeatSelection()" class="bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 transition-all duration-300 font-medium">
+                        Continue to Seat Selection
+                    </button>
+                </div>
+            `;
+            
+            // Remove existing review if any
+            const existingReview = document.getElementById('journeyReview');
+            if (existingReview) {
+                existingReview.remove();
+            }
+            
+            // Insert after step3
+            const step3 = document.getElementById('step3');
+            step3.parentNode.insertBefore(reviewContainer, step3.nextSibling);
+            
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('journeyReview').classList.remove('hidden');
+        }
+
+        function goBackToPassengers() {
+            document.getElementById('journeyReview').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            updateStepIndicator(3);
+        }
+
+        function proceedToSeatSelection() {
+            initializeSeatSelection();
+            updateStepIndicator(5);
+        }
+
+        function initializeSeatSelection() {
+            // Initialize class selection
+            document.querySelectorAll('.class-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.class-option').forEach(opt => opt.classList.remove('border-orange-500', 'bg-orange-50'));
+                    this.classList.add('border-orange-500', 'bg-orange-50');
+                    selectedClass = this.dataset.class;
+                    updateTotalPrice();
+                });
+            });
+            
+            // Set default class
+            document.querySelector('.class-option[data-class="sleeper"]').click();
+            
+            // Generate seat map
+            generateSeatMap();
+            
+            document.getElementById('journeyReview').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+
+        function generateSeatMap() {
+            const seatGrid = document.getElementById('seatGrid');
+            seatGrid.innerHTML = '';
+            
+            // Generate 12 rows with 4 seats each (2-2 configuration)
+            for (let row = 1; row <= 12; row++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex items-center mb-2';
+                
+                // Left side seats
+                for (let seat = 1; seat <= 2; seat++) {
+                    const seatNumber = `${row}${String.fromCharCode(64 + seat)}`;
+                    const seatDiv = createSeat(seatNumber);
+                    rowDiv.appendChild(seatDiv);
+                }
+                
+                // Aisle
+                const aisle = document.createElement('div');
+                aisle.className = 'w-8';
+                rowDiv.appendChild(aisle);
+                
+                // Right side seats
+                for (let seat = 3; seat <= 4; seat++) {
+                    const seatNumber = `${row}${String.fromCharCode(64 + seat)}`;
+                    const seatDiv = createSeat(seatNumber);
+                    rowDiv.appendChild(seatDiv);
+                }
+                
+                seatGrid.appendChild(rowDiv);
+            }
+        }
+
+        function createSeat(seatNumber) {
+            const seatDiv = document.createElement('div');
+            seatDiv.className = 'seat available';
+            seatDiv.textContent = seatNumber;
+            seatDiv.dataset.seat = seatNumber;
+            
+            // Randomly make some seats occupied
+            if (Math.random() < 0.3) {
+                seatDiv.classList.remove('available');
+                seatDiv.classList.add('occupied');
+            } else {
+                seatDiv.addEventListener('click', function() {
+                    toggleSeat(this);
+                });
+            }
+            
+            return seatDiv;
+        }
+
+        function toggleSeat(seatElement) {
+            const seatNumber = seatElement.dataset.seat;
+            const passengerCount = parseInt(bookingData.passengers);
+            
+            if (seatElement.classList.contains('selected')) {
+                seatElement.classList.remove('selected');
+                seatElement.classList.add('available');
+                selectedSeats = selectedSeats.filter(seat => seat !== seatNumber);
+            } else if (selectedSeats.length < passengerCount) {
+                seatElement.classList.remove('available');
+                seatElement.classList.add('selected');
+                selectedSeats.push(seatNumber);
+            } else {
+                alert(`You can only select ${passengerCount} seat(s)`);
+            }
+            
+            updateSeatDisplay();
+        }
+
+        function updateSeatDisplay() {
+            document.getElementById('selectedSeats').textContent = selectedSeats.join(', ') || 'None';
+            updateTotalPrice();
+            
+            const confirmBtn = document.getElementById('confirmBookingBtn');
+            confirmBtn.disabled = selectedSeats.length !== parseInt(bookingData.passengers);
+        }
+
+        function updateTotalPrice() {
+            const basePrice = selectedTrain.price * parseInt(bookingData.passengers);
+            let classPrice = 0;
+            
+            switch (selectedClass) {
+                case 'ac': classPrice = 500 * parseInt(bookingData.passengers); break;
+                case 'first': classPrice = 1200 * parseInt(bookingData.passengers); break;
+            }
+            
+            const totalPrice = basePrice + classPrice;
+            document.getElementById('totalPrice').textContent = totalPrice;
+        }
+
+        function showFinalConfirmation() {
+            const finalConfirmation = document.createElement('div');
+            finalConfirmation.id = 'finalConfirmation';
+            finalConfirmation.className = 'bg-white rounded-2xl shadow-xl p-8 booking-card mb-8';
+            
+            const basePrice = selectedTrain.price * passengerDetails.length;
+            const classPrice = getClassPrice() * passengerDetails.length;
+            const reservationCharges = passengerDetails.length * 40;
+            const serviceTax = Math.round((basePrice + classPrice) * 0.05);
+            const totalPrice = basePrice + classPrice + reservationCharges + serviceTax;
+            
+            finalConfirmation.innerHTML = `
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Final Booking Confirmation
+                </h3>
+                
+                <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-6 mb-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Complete Journey Summary</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Train:</span>
+                                <span class="font-medium">${selectedTrain.name} (${selectedTrain.number})</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Route:</span>
+                                <span class="font-medium">${bookingData.from.split(',')[0]} → ${bookingData.to.split(',')[0]}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Date & Time:</span>
+                                <span class="font-medium">${new Date(bookingData.date).toLocaleDateString()} | ${selectedTrain.departure}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Class:</span>
+                                <span class="font-medium">${getClassDisplayName(selectedClass)}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Seats:</span>
+                                <span class="font-medium">${selectedSeats.join(', ')}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Passengers:</span>
+                                <span class="font-medium">${passengerDetails.length}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Duration:</span>
+                                <span class="font-medium">${selectedTrain.duration}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Fare Breakdown</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Base Fare:</span>
+                                <span class="font-medium">₹${basePrice}</span>
+                            </div>
+                            ${classPrice > 0 ? `
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Class Upgrade:</span>
+                                    <span class="font-medium">₹${classPrice}</span>
+                                </div>
+                            ` : ''}
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Reservation:</span>
+                                <span class="font-medium">₹${reservationCharges}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Service Tax:</span>
+                                <span class="font-medium">₹${serviceTax}</span>
+                            </div>
+                            <div class="border-t pt-2 mt-2">
+                                <div class="flex justify-between text-lg font-bold text-orange-600">
+                                    <span>Total Amount:</span>
+                                    <span>₹${totalPrice}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Passenger List</h4>
+                        <div class="space-y-3 max-h-48 overflow-y-auto">
+                            ${passengerDetails.map((passenger, index) => `
+                                <div class="bg-white rounded-lg p-3 border border-green-200">
+                                    <p class="font-medium text-gray-800">${passenger.name}</p>
+                                    <p class="text-sm text-gray-600">${passenger.age}Y, ${passenger.gender} | Seat: ${selectedSeats[index] || 'TBD'}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <h4 class="text-sm font-semibold text-yellow-800 mb-2">Important Terms & Conditions</h4>
+                    <ul class="text-xs text-yellow-700 space-y-1">
+                        <li>• Please carry a valid ID proof during travel</li>
+                        <li>• Arrive at the station at least 30 minutes before departure</li>
+                        <li>• Cancellation charges apply as per railway policy</li>
+                        <li>• Ticket is non-transferable</li>
+                    </ul>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <button onclick="goBackToSeats()" class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium">
+                        Back to Seats
+                    </button>
+                    <button onclick="confirmFinalBooking()" class="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                        Confirm & Pay ₹${totalPrice}
+                    </button>
+                </div>
+            `;
+            
+            // Remove existing confirmation if any
+            const existingConfirmation = document.getElementById('finalConfirmation');
+            if (existingConfirmation) {
+                existingConfirmation.remove();
+            }
+            
+            // Insert after step4
+            const step4 = document.getElementById('step4');
+            step4.parentNode.insertBefore(finalConfirmation, step4.nextSibling);
+            
+            document.getElementById('step4').classList.add('hidden');
+            document.getElementById('finalConfirmation').classList.remove('hidden');
+            updateStepIndicator(6);
+        }
+
+        function getClassPrice() {
+            switch (selectedClass) {
+                case 'ac': return 500;
+                case 'first': return 1200;
+                default: return 0;
+            }
+        }
+
+        function goBackToSeats() {
+            document.getElementById('finalConfirmation').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            updateStepIndicator(5);
+        }
+
+        function confirmFinalBooking() {
+            const ticketNumber = 'IRCTC' + Date.now().toString().slice(-8);
+            const basePrice = selectedTrain.price * passengerDetails.length;
+            const classPrice = getClassPrice() * passengerDetails.length;
+            const reservationCharges = passengerDetails.length * 40;
+            const serviceTax = Math.round((basePrice + classPrice) * 0.05);
+            const totalPrice = basePrice + classPrice + reservationCharges + serviceTax;
+            
+            // Create booking record
+            const booking = {
+                id: ticketNumber,
+                userId: currentUser.id,
+                train: selectedTrain,
+                from: bookingData.from,
+                to: bookingData.to,
+                date: bookingData.date,
+                passengers: passengerDetails,
+                seats: selectedSeats,
+                class: selectedClass,
+                totalPrice: totalPrice,
+                bookingDate: new Date().toISOString(),
+                status: 'confirmed'
+            };
+            
+            // Save booking
+            if (!userBookings[currentUser.id]) {
+                userBookings[currentUser.id] = [];
+            }
+            userBookings[currentUser.id].push(booking);
+            localStorage.setItem('userBookings', JSON.stringify(userBookings));
+            
+            // Display booking confirmation
+            document.getElementById('ticketNumber').textContent = ticketNumber;
+            document.getElementById('ticketDetails').innerHTML = `
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Train:</span>
+                    <span class="font-medium">${selectedTrain.name} (${selectedTrain.number})</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Route:</span>
+                    <span class="font-medium">${bookingData.from.split(',')[0]} → ${bookingData.to.split(',')[0]}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Date:</span>
+                    <span class="font-medium">${new Date(bookingData.date).toLocaleDateString()}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Time:</span>
+                    <span class="font-medium">${selectedTrain.departure} - ${selectedTrain.arrival}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Class:</span>
+                    <span class="font-medium">${getClassDisplayName(selectedClass)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Seats:</span>
+                    <span class="font-medium">${selectedSeats.join(', ')}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Passengers:</span>
+                    <span class="font-medium">${passengerDetails.map(p => p.name).join(', ')}</span>
+                </div>
+                <div class="flex justify-between border-t pt-2 mt-2">
+                    <span class="text-gray-600 font-medium">Total:</span>
+                    <span class="font-bold text-orange-600">₹${totalPrice}</span>
+                </div>
+            `;
+            
+            document.getElementById('finalConfirmation').classList.add('hidden');
+            document.getElementById('bookingConfirmation').classList.remove('hidden');
+            document.getElementById('bookingConfirmation').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getClassDisplayName(classCode) {
+            switch (classCode) {
+                case 'sleeper': return 'Sleeper Class (SL)';
+                case 'ac': return 'AC 3 Tier (3A)';
+                case 'first': return 'AC 2 Tier (2A)';
+                default: return classCode;
+            }
+        }
+
+        function loadUserTickets() {
+            const ticketsList = document.getElementById('ticketsList');
+            const userTickets = userBookings[currentUser.id] || [];
+            
+            if (userTickets.length === 0) {
+                ticketsList.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                        </svg>
+                        <p class="text-lg">No tickets booked yet</p>
+                        <p class="text-sm">Book your first journey to see tickets here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            ticketsList.innerHTML = '';
+            
+            userTickets.reverse().forEach(ticket => {
+                const ticketCard = document.createElement('div');
+                ticketCard.className = `${ticket.status === 'cancelled' ? 'cancelled-ticket' : 'ticket-card'} rounded-lg p-6 booking-card`;
+                
+                const journeyDate = new Date(ticket.date);
+                const isUpcoming = journeyDate > new Date();
+                
+                ticketCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">${ticket.train.name}</h3>
+                            <p class="text-sm text-gray-600">${ticket.train.number}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${
+                                ticket.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                isUpcoming ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                            }">
+                                ${ticket.status === 'cancelled' ? 'Cancelled' : isUpcoming ? 'Upcoming' : 'Completed'}
+                            </span>
+                            <p class="text-sm text-gray-600 mt-1">PNR: ${ticket.id}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Route</p>
+                            <p class="font-medium">${ticket.from.split(',')[0]} → ${ticket.to.split(',')[0]}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Journey Date</p>
+                            <p class="font-medium">${journeyDate.toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Time</p>
+                            <p class="font-medium">${ticket.train.departure} - ${ticket.train.arrival}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Class</p>
+                            <p class="font-medium">${getClassDisplayName(ticket.class)}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Seats</p>
+                            <p class="font-medium">${ticket.seats.join(', ')}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Amount</p>
+                            <p class="font-medium text-orange-600">₹${ticket.totalPrice}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-2">Passengers</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${ticket.passengers.map(p => `
+                                <span class="px-2 py-1 bg-gray-100 rounded text-sm">${p.name} (${p.age}${p.gender.charAt(0).toUpperCase()})</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    ${ticket.status !== 'cancelled' && isUpcoming ? `
+                        <div class="flex justify-end">
+                            <button onclick="cancelTicket('${ticket.id}')" 
+                                    class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-all duration-300 font-medium">
+                                Cancel Ticket
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+                
+                ticketsList.appendChild(ticketCard);
+            });
+        }
+
+        function cancelTicket(ticketId) {
+            showCancellationModal(ticketId);
+        }
+
+        function showCancellationModal(ticketId) {
+            const userTickets = userBookings[currentUser.id] || [];
+            const ticket = userTickets.find(t => t.id === ticketId);
+            
+            if (!ticket) return;
+            
+            const modal = document.createElement('div');
+            modal.id = 'cancellationModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Cancel Ticket</h3>
+                        <p class="text-gray-600">Please provide the following details to cancel your ticket</p>
+                    </div>
+                    
+                    <form id="cancellationForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">PNR Number *</label>
+                            <input type="text" id="cancelPnr" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                   placeholder="Enter PNR number">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mobile Number *</label>
+                            <input type="tel" id="cancelMobile" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                   placeholder="Enter registered mobile number">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" id="cancelEmail" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                   placeholder="Enter registered email">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Reason for Cancellation</label>
+                            <select id="cancelReason" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <option value="">Select reason (optional)</option>
+                                <option value="change_of_plans">Change of Plans</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="medical">Medical Reasons</option>
+                                <option value="work">Work Related</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <h4 class="text-sm font-semibold text-yellow-800 mb-2">Cancellation Policy</h4>
+                            <ul class="text-xs text-yellow-700 space-y-1">
+                                <li>• Cancellation charges: ₹120 per passenger</li>
+                                <li>• Refund will be processed within 5-7 working days</li>
+                                <li>• No refund for cancellation within 4 hours of departure</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="flex space-x-4 pt-4">
+                            <button type="button" onclick="closeCancellationModal()" 
+                                    class="flex-1 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    class="flex-1 bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-all duration-300 font-medium">
+                                Confirm Cancellation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('cancellationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                processCancellation(ticketId);
+            });
+        }
+
+        function processCancellation(ticketId) {
+            const pnr = document.getElementById('cancelPnr').value;
+            const mobile = document.getElementById('cancelMobile').value;
+            const email = document.getElementById('cancelEmail').value;
+            const reason = document.getElementById('cancelReason').value;
+            
+            if (!pnr || !mobile || !email) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            const userTickets = userBookings[currentUser.id] || [];
+            const ticket = userTickets.find(t => t.id === ticketId);
+            
+            // Validate PNR
+            if (pnr !== ticket.id) {
+                alert('Invalid PNR number. Please check and try again.');
+                return;
+            }
+            
+            // Validate mobile or email (check if any passenger has this mobile/email)
+            const validContact = ticket.passengers.some(p => p.mobile === mobile || p.email === email);
+            if (!validContact) {
+                alert('Mobile number or email does not match any passenger details.');
+                return;
+            }
+            
+            // Process cancellation
+            const ticketIndex = userTickets.findIndex(t => t.id === ticketId);
+            if (ticketIndex !== -1) {
+                userTickets[ticketIndex].status = 'cancelled';
+                userTickets[ticketIndex].cancellationReason = reason;
+                userTickets[ticketIndex].cancellationDate = new Date().toISOString();
+                
+                userBookings[currentUser.id] = userTickets;
+                localStorage.setItem('userBookings', JSON.stringify(userBookings));
+                
+                closeCancellationModal();
+                
+                // Show success message
+                const successModal = document.createElement('div');
+                successModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+                successModal.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Cancellation Successful</h3>
+                        <p class="text-gray-600 mb-4">Your ticket has been cancelled successfully.</p>
+                        <p class="text-sm text-gray-500 mb-6">Refund amount: ₹${parseInt(ticket.totalPrice) - 120} (after cancellation charges)</p>
+                        <button onclick="this.parentElement.parentElement.remove(); loadUserTickets();" 
+                                class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 font-medium">
+                            OK
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(successModal);
+            }
+        }
+
+        function closeCancellationModal() {
+            const modal = document.getElementById('cancellationModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function updateStepIndicator(currentStep) {
+            const indicators = document.querySelectorAll('.step-indicator');
+            indicators.forEach((indicator, index) => {
+                const step = index + 1;
+                indicator.classList.remove('active', 'completed');
+                
+                if (step < currentStep) {
+                    indicator.classList.add('completed');
+                } else if (step === currentStep) {
+                    indicator.classList.add('active');
+                }
+            });
+        }
+
+        function newSearch() {
+            // Reset all data
+            selectedTrain = null;
+            selectedClass = 'sleeper';
+            selectedSeats = [];
+            passengerDetails = [];
+            bookingData = {};
+            
+            // Reset forms
+            document.getElementById('searchForm').reset();
+            
+            // Show step 1
+            document.getElementById('bookingConfirmation').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.add('hidden');
+            
+            updateStepIndicator(1);
+            document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('bookingPage').classList.add('hidden');
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('loginFormElement').reset();
+            showLogin();
+            newSearch();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972bbb53317f85a7',t:'MTc1NTc5NjA5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
