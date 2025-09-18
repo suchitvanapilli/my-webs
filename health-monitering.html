@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Community Health Monitoring System - Rural Northeast India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .bounce-in {
+            animation: bounceIn 1s ease-out;
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8); }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .alert-critical {
+            animation: alertPulse 1s infinite;
+        }
+        
+        @keyframes alertPulse {
+            0%, 100% { background-color: #ef4444; }
+            50% { background-color: #dc2626; }
+        }
+        
+        .water-wave {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8, #2563eb);
+            background-size: 400% 400%;
+            animation: waveAnimation 3s ease-in-out infinite;
+        }
+        
+        @keyframes waveAnimation {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">💧</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800">HealthGuard NE</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="showSection('dashboard')" class="nav-btn text-gray-600 hover:text-blue-600 font-medium">Dashboard</button>
+                    <button onclick="showSection('monitoring')" class="nav-btn text-gray-600 hover:text-blue-600 font-medium">Monitoring</button>
+                    <button onclick="showSection('alerts')" class="nav-btn text-gray-600 hover:text-blue-600 font-medium">Alerts</button>
+                    <button onclick="showSection('reports')" class="nav-btn text-gray-600 hover:text-blue-600 font-medium">Reports</button>
+                    <button onclick="showSection('community')" class="nav-btn text-gray-600 hover:text-blue-600 font-medium">Community</button>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span id="userWelcome" class="text-sm text-gray-600 hidden"></span>
+                    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" id="logoutBtn" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen gradient-bg flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md bounce-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 pulse-glow">
+                    <span class="text-white text-2xl">💧</span>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                <p class="text-gray-600">Smart Health Monitoring System</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email or Phone</label>
+                    <input type="text" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Enter your email or phone" required>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="flex items-center justify-between slide-up">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-medium slide-up">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center slide-up">
+                <p class="text-gray-600">Don't have an account? 
+                    <button onclick="showRegister()" class="text-blue-600 hover:text-blue-800 font-medium">Sign up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="registerPage" class="min-h-screen gradient-bg flex items-center justify-center px-4" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md bounce-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 pulse-glow">
+                    <span class="text-white text-2xl">🏥</span>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Join HealthGuard</h2>
+                <p class="text-gray-600">Protect your community's health</p>
+            </div>
+            
+            <form id="registerForm" class="space-y-4">
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="regName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="regEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" id="regPhone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Village/Area</label>
+                    <select id="regVillage" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" required>
+                        <option value="">Select your area</option>
+                        <option value="Guwahati">Guwahati</option>
+                        <option value="Dibrugarh">Dibrugarh</option>
+                        <option value="Jorhat">Jorhat</option>
+                        <option value="Silchar">Silchar</option>
+                        <option value="Tezpur">Tezpur</option>
+                        <option value="Nagaon">Nagaon</option>
+                        <option value="Imphal">Imphal</option>
+                        <option value="Aizawl">Aizawl</option>
+                        <option value="Shillong">Shillong</option>
+                        <option value="Agartala">Agartala</option>
+                    </select>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                    <select id="regRole" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" required>
+                        <option value="">Select your role</option>
+                        <option value="Community Member">Community Member</option>
+                        <option value="Health Worker">Health Worker</option>
+                        <option value="Village Leader">Village Leader</option>
+                        <option value="Government Official">Government Official</option>
+                    </select>
+                </div>
+                
+                <div class="slide-up">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="regPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Create a password" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all transform hover:scale-105 font-medium slide-up">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center slide-up">
+                <p class="text-gray-600">Already have an account? 
+                    <button onclick="showLogin()" class="text-green-600 hover:text-green-800 font-medium">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="pt-20" style="display: none;">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="mb-8 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Health Monitoring Dashboard</h2>
+                    <p class="text-gray-600">Real-time water quality and disease surveillance for Northeast India</p>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover slide-up cursor-pointer" onclick="showInfoModal('waterQuality')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Water Quality Index</p>
+                                <p class="text-2xl font-bold text-green-600" id="waterQuality">85</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-green-600 text-xl">💧</span>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-2 hover:underline">Click for details →</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover slide-up cursor-pointer" onclick="showInfoModal('activeCases')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Active Cases</p>
+                                <p class="text-2xl font-bold text-orange-600" id="activeCases">23</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                <span class="text-orange-600 text-xl">🏥</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">↑ 12% from last week</p>
+                        <p class="text-xs text-blue-600 mt-1 hover:underline">Click for details →</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover slide-up cursor-pointer" onclick="showInfoModal('riskLevel')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Risk Level</p>
+                                <p class="text-2xl font-bold text-yellow-600" id="riskLevel">Medium</p>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="text-yellow-600 text-xl">⚠️</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Based on current data</p>
+                        <p class="text-xs text-blue-600 mt-1 hover:underline">Click for details →</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover slide-up cursor-pointer" onclick="showInfoModal('communities')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Communities</p>
+                                <p class="text-2xl font-bold text-blue-600" id="communities">156</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600 text-xl">🏘️</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Monitored areas</p>
+                        <p class="text-xs text-blue-600 mt-1 hover:underline">Click for details →</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 slide-up">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Disease Trends (Last 30 Days)</h3>
+                        <canvas id="diseaseChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 slide-up">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Water Quality by Region</h3>
+                        <canvas id="waterChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Alerts -->
+                <div class="bg-white rounded-xl shadow-lg p-6 slide-up">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Alerts</h3>
+                    <div id="recentAlerts" class="space-y-3">
+                        <!-- Alerts will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div id="monitoring" class="section" style="display: none;">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="mb-8 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Water Quality Monitoring</h2>
+                    <p class="text-gray-600">Real-time monitoring of water sources across Northeast India</p>
+                </div>
+
+                <!-- Water Source Status -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="showInfoModal('brahmaputra')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Brahmaputra River</h3>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Good</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">pH Level:</span>
+                                <span class="font-medium">7.2</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Turbidity:</span>
+                                <span class="font-medium">2.1 NTU</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">E.coli:</span>
+                                <span class="font-medium text-green-600">Safe</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-3 hover:underline">Click for detailed analysis →</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="showInfoModal('barak')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Barak River</h3>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">Moderate</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">pH Level:</span>
+                                <span class="font-medium">6.8</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Turbidity:</span>
+                                <span class="font-medium">4.5 NTU</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">E.coli:</span>
+                                <span class="font-medium text-yellow-600">Monitor</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-3 hover:underline">Click for detailed analysis →</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="showInfoModal('imphal')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Imphal Lake</h3>
+                            <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">Poor</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">pH Level:</span>
+                                <span class="font-medium">5.9</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Turbidity:</span>
+                                <span class="font-medium">8.2 NTU</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">E.coli:</span>
+                                <span class="font-medium text-red-600">High Risk</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-3 hover:underline">Click for detailed analysis →</p>
+                    </div>
+                </div>
+
+                <!-- Report Water Issue -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Report Water Quality Issue</h3>
+                    <form id="waterReportForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                            <input type="text" id="reportLocation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter location" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Issue Type</label>
+                            <select id="reportIssue" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Select issue type</option>
+                                <option value="Contamination">Water Contamination</option>
+                                <option value="Odor">Strange Odor</option>
+                                <option value="Color">Unusual Color</option>
+                                <option value="Taste">Bad Taste</option>
+                                <option value="Illness">Related Illness</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="reportDescription" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Describe the issue in detail"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Submit Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div id="alerts" class="section" style="display: none;">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="mb-8 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Health Alerts & Warnings</h2>
+                    <p class="text-gray-600">Early warning system for water-borne diseases</p>
+                </div>
+
+                <!-- Alert Levels -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="text-red-500 text-2xl mr-3">🚨</span>
+                            <h3 class="text-lg font-semibold text-red-800">Critical Alerts</h3>
+                        </div>
+                        <p class="text-3xl font-bold text-red-600 mb-2" id="criticalAlerts">3</p>
+                        <p class="text-sm text-red-700">Immediate action required</p>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="text-yellow-500 text-2xl mr-3">⚠️</span>
+                            <h3 class="text-lg font-semibold text-yellow-800">Warning Alerts</h3>
+                        </div>
+                        <p class="text-3xl font-bold text-yellow-600 mb-2" id="warningAlerts">7</p>
+                        <p class="text-sm text-yellow-700">Monitor closely</p>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="text-blue-500 text-2xl mr-3">ℹ️</span>
+                            <h3 class="text-lg font-semibold text-blue-800">Info Alerts</h3>
+                        </div>
+                        <p class="text-3xl font-bold text-blue-600 mb-2" id="infoAlerts">12</p>
+                        <p class="text-sm text-blue-700">General updates</p>
+                    </div>
+                </div>
+
+                <!-- Active Alerts -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Active Alerts</h3>
+                    <div id="activeAlerts" class="space-y-4">
+                        <!-- Alerts will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="section" style="display: none;">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="mb-8 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Health Reports & Analytics</h2>
+                    <p class="text-gray-600">Comprehensive health data analysis and reporting</p>
+                </div>
+
+                <!-- Report Generation -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Generate Custom Report</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                            <select id="reportType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="water-quality">Water Quality Report</option>
+                                <option value="disease-surveillance">Disease Surveillance</option>
+                                <option value="community-health">Community Health Status</option>
+                                <option value="outbreak-analysis">Outbreak Analysis</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+                            <select id="reportPeriod" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="7days">Last 7 Days</option>
+                                <option value="30days">Last 30 Days</option>
+                                <option value="3months">Last 3 Months</option>
+                                <option value="1year">Last Year</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                            <select id="reportRegion" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="all">All Regions</option>
+                                <option value="assam">Assam</option>
+                                <option value="manipur">Manipur</option>
+                                <option value="meghalaya">Meghalaya</option>
+                                <option value="mizoram">Mizoram</option>
+                                <option value="nagaland">Nagaland</option>
+                                <option value="tripura">Tripura</option>
+                                <option value="arunachal">Arunachal Pradesh</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="generateReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Generate Report</button>
+                </div>
+
+                <!-- Sample Reports -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Weekly Health Summary</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Total Cases Reported:</span>
+                                <span class="font-medium">47</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Cholera Cases:</span>
+                                <span class="font-medium">12</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Diarrhea Cases:</span>
+                                <span class="font-medium">23</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Typhoid Cases:</span>
+                                <span class="font-medium">8</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Hepatitis A Cases:</span>
+                                <span class="font-medium">4</span>
+                            </div>
+                        </div>
+                        <button class="mt-4 text-blue-600 hover:text-blue-800 font-medium">Download Full Report</button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Water Quality Trends</h3>
+                        <canvas id="trendsChart" width="400" height="200"></canvas>
+                        <button onclick="showDetailedAnalysis()" class="mt-4 text-blue-600 hover:text-blue-800 font-medium">View Detailed Analysis</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Section -->
+        <div id="community" class="section" style="display: none;">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="mb-8 fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Community Health Network</h2>
+                    <p class="text-gray-600">Connect with health workers and community members</p>
+                </div>
+
+                <!-- Community Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div class="text-3xl mb-2">👥</div>
+                        <p class="text-2xl font-bold text-blue-600">1,247</p>
+                        <p class="text-sm text-gray-600">Active Members</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div class="text-3xl mb-2">🏥</div>
+                        <p class="text-2xl font-bold text-green-600">89</p>
+                        <p class="text-sm text-gray-600">Health Workers</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div class="text-3xl mb-2">🏘️</div>
+                        <p class="text-2xl font-bold text-purple-600">156</p>
+                        <p class="text-sm text-gray-600">Villages</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div class="text-3xl mb-2">📱</div>
+                        <p class="text-2xl font-bold text-orange-600">342</p>
+                        <p class="text-sm text-gray-600">Reports Today</p>
+                    </div>
+                </div>
+
+                <!-- Health Education -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Health Education Resources</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">💧</div>
+                            <h4 class="font-medium text-gray-800 mb-2">Water Purification Methods</h4>
+                            <p class="text-sm text-gray-600 mb-3">Learn safe water treatment techniques for your home</p>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Read More →</button>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">🦠</div>
+                            <h4 class="font-medium text-gray-800 mb-2">Disease Prevention</h4>
+                            <p class="text-sm text-gray-600 mb-3">Prevent water-borne diseases with proper hygiene</p>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Read More →</button>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">🏥</div>
+                            <h4 class="font-medium text-gray-800 mb-2">Emergency Response</h4>
+                            <p class="text-sm text-gray-600 mb-3">What to do during a health emergency</p>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Read More →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contacts -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Emergency Contacts</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">🚨 Emergency Helpline</h4>
+                            <p class="text-xl font-bold text-red-600">108</p>
+                            <p class="text-sm text-gray-600">24/7 Medical Emergency</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">🏥 District Health Office</h4>
+                            <p class="text-xl font-bold text-blue-600">+91-361-2345678</p>
+                            <p class="text-sm text-gray-600">Health Department Guwahati</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">💧 Water Quality Lab</h4>
+                            <p class="text-xl font-bold text-green-600">+91-361-2876543</p>
+                            <p class="text-sm text-gray-600">Water Testing Services</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">📱 SMS Alerts</h4>
+                            <p class="text-xl font-bold text-purple-600">56070</p>
+                            <p class="text-sm text-gray-600">Health Alert Notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Modal -->
+    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+                <button onclick="closeInfoModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentSection = 'dashboard';
+
+        // Authentication functions
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('registerPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function login(userData) {
+            currentUser = userData;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('userWelcome').textContent = `Welcome, ${userData.name}`;
+            document.getElementById('userWelcome').classList.remove('hidden');
+            document.getElementById('logoutBtn').style.display = 'block';
+            
+            // Initialize dashboard
+            initializeDashboard();
+            showSection('dashboard');
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('userWelcome').classList.add('hidden');
+            document.getElementById('logoutBtn').style.display = 'none';
+            showLogin();
+        }
+
+        // Form handlers
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simulate authentication
+            if (email && password) {
+                const userData = {
+                    name: email.includes('@') ? email.split('@')[0] : email,
+                    email: email,
+                    role: 'Community Member'
+                };
+                
+                // Add loading animation
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Signing in...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    login(userData);
+                }, 1500);
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const village = document.getElementById('regVillage').value;
+            const role = document.getElementById('regRole').value;
+            
+            if (name && email && phone && village && role) {
+                const userData = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    village: village,
+                    role: role
+                };
+                
+                // Add loading animation
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Creating Account...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    login(userData);
+                }, 1500);
+            }
+        });
+
+        // Water report form handler
+        document.getElementById('waterReportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const location = document.getElementById('reportLocation').value;
+            const issue = document.getElementById('reportIssue').value;
+            const description = document.getElementById('reportDescription').value;
+            
+            if (location && issue) {
+                alert('Water quality report submitted successfully! Our team will investigate within 24 hours.');
+                this.reset();
+            }
+        });
+
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).style.display = 'block';
+            currentSection = sectionName;
+            
+            // Update navigation
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('text-blue-600', 'font-semibold');
+                btn.classList.add('text-gray-600');
+            });
+            
+            // Initialize section-specific content
+            if (sectionName === 'alerts') {
+                initializeAlerts();
+            } else if (sectionName === 'reports') {
+                initializeReports();
+            }
+        }
+
+        // Dashboard initialization
+        function initializeDashboard() {
+            // Initialize charts
+            initializeCharts();
+            
+            // Update metrics with animation
+            animateCounter('waterQuality', 85);
+            animateCounter('activeCases', 23);
+            animateCounter('communities', 156);
+            
+            // Load recent alerts
+            loadRecentAlerts();
+        }
+
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = targetValue / 50;
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    currentValue = targetValue;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(currentValue);
+            }, 30);
+        }
+
+        function initializeCharts() {
+            // Disease trends chart
+            const diseaseCtx = document.getElementById('diseaseChart').getContext('2d');
+            new Chart(diseaseCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Cholera',
+                        data: [12, 8, 15, 10],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Diarrhea',
+                        data: [25, 30, 28, 23],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Typhoid',
+                        data: [5, 7, 6, 8],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Water quality chart
+            const waterCtx = document.getElementById('waterChart').getContext('2d');
+            new Chart(waterCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Assam', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Tripura'],
+                    datasets: [{
+                        label: 'Water Quality Index',
+                        data: [85, 72, 90, 78, 82, 88],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#10b981',
+                            '#f59e0b',
+                            '#10b981',
+                            '#10b981'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadRecentAlerts() {
+            const alertsContainer = document.getElementById('recentAlerts');
+            const alerts = [
+                {
+                    type: 'critical',
+                    message: 'High E.coli levels detected in Imphal Lake water source',
+                    time: '2 hours ago',
+                    location: 'Imphal, Manipur'
+                },
+                {
+                    type: 'warning',
+                    message: 'Increased diarrhea cases reported in Jorhat district',
+                    time: '4 hours ago',
+                    location: 'Jorhat, Assam'
+                },
+                {
+                    type: 'info',
+                    message: 'Water quality testing completed for Brahmaputra River',
+                    time: '6 hours ago',
+                    location: 'Guwahati, Assam'
+                }
+            ];
+
+            alertsContainer.innerHTML = alerts.map(alert => {
+                const bgColor = alert.type === 'critical' ? 'bg-red-50 border-red-200' : 
+                               alert.type === 'warning' ? 'bg-yellow-50 border-yellow-200' : 
+                               'bg-blue-50 border-blue-200';
+                const textColor = alert.type === 'critical' ? 'text-red-800' : 
+                                 alert.type === 'warning' ? 'text-yellow-800' : 
+                                 'text-blue-800';
+                
+                return `
+                    <div class="${bgColor} border rounded-lg p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="${textColor} font-medium">${alert.message}</p>
+                                <p class="text-sm text-gray-600 mt-1">${alert.location} • ${alert.time}</p>
+                            </div>
+                            <span class="text-xs px-2 py-1 rounded-full ${alert.type === 'critical' ? 'bg-red-100 text-red-800' : alert.type === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}">${alert.type.toUpperCase()}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function initializeAlerts() {
+            const activeAlertsContainer = document.getElementById('activeAlerts');
+            const alerts = [
+                {
+                    id: 1,
+                    type: 'critical',
+                    title: 'Water Contamination Alert',
+                    message: 'Severe E.coli contamination detected in Imphal Lake. Immediate boiling of water recommended.',
+                    location: 'Imphal, Manipur',
+                    time: '2 hours ago',
+                    affected: '15,000 people'
+                },
+                {
+                    id: 2,
+                    type: 'critical',
+                    title: 'Cholera Outbreak',
+                    message: 'Multiple cholera cases reported in Silchar district. Avoid untreated water sources.',
+                    location: 'Silchar, Assam',
+                    time: '5 hours ago',
+                    affected: '8,500 people'
+                },
+                {
+                    id: 3,
+                    type: 'warning',
+                    title: 'Increased Diarrhea Cases',
+                    message: 'Rising trend of diarrhea cases in rural areas. Enhanced surveillance activated.',
+                    location: 'Jorhat, Assam',
+                    time: '1 day ago',
+                    affected: '3,200 people'
+                }
+            ];
+
+            activeAlertsContainer.innerHTML = alerts.map(alert => {
+                const bgColor = alert.type === 'critical' ? 'bg-red-50 border-l-red-500' : 'bg-yellow-50 border-l-yellow-500';
+                const iconColor = alert.type === 'critical' ? 'text-red-500' : 'text-yellow-500';
+                const icon = alert.type === 'critical' ? '🚨' : '⚠️';
+                
+                return `
+                    <div class="${bgColor} border-l-4 rounded-lg p-6">
+                        <div class="flex items-start">
+                            <span class="${iconColor} text-2xl mr-4">${icon}</span>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-semibold text-gray-800">${alert.title}</h4>
+                                    <span class="text-xs px-2 py-1 rounded-full ${alert.type === 'critical' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">${alert.type.toUpperCase()}</span>
+                                </div>
+                                <p class="text-gray-700 mb-3">${alert.message}</p>
+                                <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                                    <span>📍 ${alert.location}</span>
+                                    <span>⏰ ${alert.time}</span>
+                                    <span>👥 ${alert.affected} affected</span>
+                                </div>
+                                <div class="mt-4 flex space-x-3">
+                                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">View Details</button>
+                                    <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors">Share Alert</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function initializeReports() {
+            // Initialize trends chart
+            const trendsCtx = document.getElementById('trendsChart');
+            if (trendsCtx) {
+                new Chart(trendsCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Water Quality Index',
+                            data: [78, 82, 85, 79, 88, 85],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 70,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const reportPeriod = document.getElementById('reportPeriod').value;
+            const reportRegion = document.getElementById('reportRegion').value;
+            
+            alert(`Generating ${reportType} report for ${reportRegion} (${reportPeriod}). Report will be ready for download in a few moments.`);
+        }
+
+        // Information Modal Functions
+        function showInfoModal(type) {
+            const modal = document.getElementById('infoModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            const infoData = {
+                waterQuality: {
+                    title: '💧 Water Quality Index - Block-wise Details',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-green-800 mb-2">Overall Status: Good (85/100)</h4>
+                                <p class="text-green-700 text-sm">Water quality varies across blocks. Critical attention needed in industrial areas.</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏛️ Assam Districts - Block-wise Water Quality</h5>
+                                <div class="space-y-3">
+                                    <div class="border-l-4 border-green-500 pl-4">
+                                        <h6 class="font-medium text-gray-800">Kamrup Metropolitan (Guwahati)</h6>
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Jalukbari: 92/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-yellow-50 p-2 rounded">
+                                                <p class="font-medium text-yellow-800">Dispur: 78/100</p>
+                                                <p class="text-xs text-yellow-600">Good</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Fancy Bazar: 88/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-red-50 p-2 rounded">
+                                                <p class="font-medium text-red-800">Bharalumukh: 65/100</p>
+                                                <p class="text-xs text-red-600">Poor</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-blue-500 pl-4">
+                                        <h6 class="font-medium text-gray-800">Dibrugarh District</h6>
+                                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-sm">
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Dibrugarh East: 89/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Chabua: 85/100</p>
+                                                <p class="text-xs text-green-600">Good</p>
+                                            </div>
+                                            <div class="bg-yellow-50 p-2 rounded">
+                                                <p class="font-medium text-yellow-800">Tingkhong: 72/100</p>
+                                                <p class="text-xs text-yellow-600">Moderate</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-purple-500 pl-4">
+                                        <h6 class="font-medium text-gray-800">Jorhat District</h6>
+                                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-sm">
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Jorhat Town: 91/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-yellow-50 p-2 rounded">
+                                                <p class="font-medium text-yellow-800">Teok: 76/100</p>
+                                                <p class="text-xs text-yellow-600">Good</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Majuli: 94/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏔️ Other States - Block-wise Analysis</h5>
+                                <div class="space-y-3">
+                                    <div class="border-l-4 border-orange-500 pl-4">
+                                        <h6 class="font-medium text-gray-800">Manipur - Imphal District</h6>
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
+                                            <div class="bg-yellow-50 p-2 rounded">
+                                                <p class="font-medium text-yellow-800">Imphal West: 74/100</p>
+                                                <p class="text-xs text-yellow-600">Good</p>
+                                            </div>
+                                            <div class="bg-red-50 p-2 rounded">
+                                                <p class="font-medium text-red-800">Imphal East: 58/100</p>
+                                                <p class="text-xs text-red-600">Poor</p>
+                                            </div>
+                                            <div class="bg-yellow-50 p-2 rounded">
+                                                <p class="font-medium text-yellow-800">Porompat: 69/100</p>
+                                                <p class="text-xs text-yellow-600">Moderate</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Wangoi: 82/100</p>
+                                                <p class="text-xs text-green-600">Good</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-teal-500 pl-4">
+                                        <h6 class="font-medium text-gray-800">Meghalaya - East Khasi Hills</h6>
+                                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-sm">
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Shillong: 95/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Sohra: 93/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                            <div class="bg-green-50 p-2 rounded">
+                                                <p class="font-medium text-green-800">Mawkyrwat: 89/100</p>
+                                                <p class="text-xs text-green-600">Excellent</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h5 class="font-medium text-red-800 mb-2">🚨 Critical Blocks Requiring Attention</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p class="font-medium text-red-700 mb-2">Immediate Action Required:</p>
+                                        <ul class="text-red-600 space-y-1">
+                                            <li>• Bharalumukh (Guwahati) - Industrial pollution</li>
+                                            <li>• Imphal East - Sewage contamination</li>
+                                            <li>• Silchar Town - River pollution</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-red-700 mb-2">Enhanced Monitoring:</p>
+                                        <ul class="text-red-600 space-y-1">
+                                            <li>• Tingkhong - Agricultural runoff</li>
+                                            <li>• Porompat - Waste management issues</li>
+                                            <li>• Teok - Seasonal contamination</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-800 mb-2">📊 Block-wise Monitoring Network</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
+                                    <div>
+                                        <p class="text-2xl font-bold text-blue-600">156</p>
+                                        <p class="text-blue-700">Total Blocks</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-green-600">89</p>
+                                        <p class="text-green-700">Good Quality</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-yellow-600">45</p>
+                                        <p class="text-yellow-700">Moderate</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-red-600">22</p>
+                                        <p class="text-red-700">Needs Attention</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                activeCases: {
+                    title: '🏥 Active Disease Cases - Block-wise Distribution',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-orange-800 mb-2">Total Active Cases: 147 (Across all blocks)</h4>
+                                <p class="text-orange-700 text-sm">12% increase from last week. Concentrated in urban and industrial blocks.</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏛️ Assam - Block-wise Disease Cases</h5>
+                                <div class="space-y-4">
+                                    <div class="border-l-4 border-red-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Kamrup Metropolitan (High Alert)</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div class="bg-red-50 p-3 rounded">
+                                                <p class="font-medium text-red-800">Bharalumukh Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Cholera: 8 cases</p>
+                                                    <p>• Diarrhea: 12 cases</p>
+                                                    <p>• Typhoid: 3 cases</p>
+                                                    <p class="text-red-600 font-medium">Total: 23 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded">
+                                                <p class="font-medium text-yellow-800">Dispur Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Diarrhea: 6 cases</p>
+                                                    <p>• Hepatitis A: 2 cases</p>
+                                                    <p>• Typhoid: 1 case</p>
+                                                    <p class="text-yellow-600 font-medium">Total: 9 cases</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-orange-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Cachar District (Silchar)</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <div class="bg-red-50 p-3 rounded">
+                                                <p class="font-medium text-red-800">Silchar Town</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Cholera: 15 cases</p>
+                                                    <p>• Diarrhea: 8 cases</p>
+                                                    <p class="text-red-600 font-medium">Total: 23 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded">
+                                                <p class="font-medium text-yellow-800">Lakhipur</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 4 cases</p>
+                                                    <p>• Typhoid: 2 cases</p>
+                                                    <p class="text-yellow-600 font-medium">Total: 6 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded">
+                                                <p class="font-medium text-green-800">Katigorah</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 2 cases</p>
+                                                    <p class="text-green-600 font-medium">Total: 2 cases</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-blue-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Jorhat District</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <div class="bg-yellow-50 p-3 rounded">
+                                                <p class="font-medium text-yellow-800">Jorhat Town</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 7 cases</p>
+                                                    <p>• Typhoid: 3 cases</p>
+                                                    <p class="text-yellow-600 font-medium">Total: 10 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded">
+                                                <p class="font-medium text-yellow-800">Teok</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 5 cases</p>
+                                                    <p>• Hepatitis A: 1 case</p>
+                                                    <p class="text-yellow-600 font-medium">Total: 6 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded">
+                                                <p class="font-medium text-green-800">Majuli</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 1 case</p>
+                                                    <p class="text-green-600 font-medium">Total: 1 case</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏔️ Other States - Block-wise Cases</h5>
+                                <div class="space-y-4">
+                                    <div class="border-l-4 border-purple-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Manipur - Imphal District</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div class="bg-red-50 p-3 rounded">
+                                                <p class="font-medium text-red-800">Imphal East</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Cholera: 12 cases</p>
+                                                    <p>• Diarrhea: 9 cases</p>
+                                                    <p>• Typhoid: 4 cases</p>
+                                                    <p class="text-red-600 font-medium">Total: 25 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded">
+                                                <p class="font-medium text-yellow-800">Imphal West</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 5 cases</p>
+                                                    <p>• Hepatitis A: 2 cases</p>
+                                                    <p class="text-yellow-600 font-medium">Total: 7 cases</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-teal-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Meghalaya - East Khasi Hills</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <div class="bg-green-50 p-3 rounded">
+                                                <p class="font-medium text-green-800">Shillong</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Diarrhea: 2 cases</p>
+                                                    <p class="text-green-600 font-medium">Total: 2 cases</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded">
+                                                <p class="font-medium text-green-800">Sohra</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Typhoid: 1 case</p>
+                                                    <p class="text-green-600 font-medium">Total: 1 case</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded">
+                                                <p class="font-medium text-green-800">Mawkyrwat</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>No active cases</p>
+                                                    <p class="text-green-600 font-medium">Total: 0 cases</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h5 class="font-medium text-red-800 mb-2">🚨 High-Risk Blocks (Immediate Intervention)</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-red-200">
+                                        <p class="font-medium text-red-800">Imphal East (25 cases)</p>
+                                        <p class="text-red-600 text-xs mt-1">Cholera outbreak - Water contamination</p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-200">
+                                        <p class="font-medium text-red-800">Bharalumukh (23 cases)</p>
+                                        <p class="text-red-600 text-xs mt-1">Industrial pollution impact</p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-200">
+                                        <p class="font-medium text-red-800">Silchar Town (23 cases)</p>
+                                        <p class="text-red-600 text-xs mt-1">River contamination source</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-800 mb-2">📊 Disease Distribution Summary</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
+                                    <div>
+                                        <p class="text-2xl font-bold text-red-600">35</p>
+                                        <p class="text-red-700">Cholera Cases</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-yellow-600">61</p>
+                                        <p class="text-yellow-700">Diarrhea Cases</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-orange-600">14</p>
+                                        <p class="text-orange-700">Typhoid Cases</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-purple-600">5</p>
+                                        <p class="text-purple-700">Hepatitis A Cases</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                riskLevel: {
+                    title: '⚠️ Risk Level Assessment - Block-wise Analysis',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-800 mb-2">Overall Risk Level: Medium (Varies by block)</h4>
+                                <p class="text-yellow-700 text-sm">Risk levels range from Low to Critical across different blocks. Industrial and urban areas show higher risk.</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🚨 Critical Risk Blocks (Immediate Action Required)</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="bg-red-50 border border-red-300 rounded-lg p-4">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-2xl mr-2">🔴</span>
+                                            <h6 class="font-medium text-red-800">Imphal East</h6>
+                                        </div>
+                                        <div class="text-sm space-y-1">
+                                            <p class="text-red-700">Risk Score: 89/100</p>
+                                            <p class="text-red-600">• 25 active cases</p>
+                                            <p class="text-red-600">• Water contamination</p>
+                                            <p class="text-red-600">• Poor sanitation</p>
+                                            <p class="text-red-600">• High population density</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-red-50 border border-red-300 rounded-lg p-4">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-2xl mr-2">🔴</span>
+                                            <h6 class="font-medium text-red-800">Bharalumukh</h6>
+                                        </div>
+                                        <div class="text-sm space-y-1">
+                                            <p class="text-red-700">Risk Score: 85/100</p>
+                                            <p class="text-red-600">• 23 active cases</p>
+                                            <p class="text-red-600">• Industrial pollution</p>
+                                            <p class="text-red-600">• River contamination</p>
+                                            <p class="text-red-600">• Slum areas</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-red-50 border border-red-300 rounded-lg p-4">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-2xl mr-2">🔴</span>
+                                            <h6 class="font-medium text-red-800">Silchar Town</h6>
+                                        </div>
+                                        <div class="text-sm space-y-1">
+                                            <p class="text-red-700">Risk Score: 82/100</p>
+                                            <p class="text-red-600">• 23 active cases</p>
+                                            <p class="text-red-600">• Barak river pollution</p>
+                                            <p class="text-red-600">• Sewage overflow</p>
+                                            <p class="text-red-600">• Market area contamination</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">⚠️ High Risk Blocks (Enhanced Monitoring)</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="bg-orange-50 border border-orange-300 rounded-lg p-3">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-lg mr-2">🟠</span>
+                                            <h6 class="font-medium text-orange-800">Jorhat Town</h6>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="text-orange-700">Risk Score: 68/100</p>
+                                            <p class="text-orange-600">10 active cases</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-orange-50 border border-orange-300 rounded-lg p-3">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-lg mr-2">🟠</span>
+                                            <h6 class="font-medium text-orange-800">Dispur</h6>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="text-orange-700">Risk Score: 65/100</p>
+                                            <p class="text-orange-600">9 active cases</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-orange-50 border border-orange-300 rounded-lg p-3">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-lg mr-2">🟠</span>
+                                            <h6 class="font-medium text-orange-800">Imphal West</h6>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="text-orange-700">Risk Score: 62/100</p>
+                                            <p class="text-orange-600">7 active cases</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-orange-50 border border-orange-300 rounded-lg p-3">
+                                        <div class="flex items-center mb-2">
+                                            <span class="text-lg mr-2">🟠</span>
+                                            <h6 class="font-medium text-orange-800">Teok</h6>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="text-orange-700">Risk Score: 58/100</p>
+                                            <p class="text-orange-600">6 active cases</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🟡 Medium Risk Blocks (Regular Monitoring)</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Lakhipur</p>
+                                        <p class="text-xs text-yellow-600">Score: 45</p>
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Tingkhong</p>
+                                        <p class="text-xs text-yellow-600">Score: 42</p>
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Porompat</p>
+                                        <p class="text-xs text-yellow-600">Score: 38</p>
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Chabua</p>
+                                        <p class="text-xs text-yellow-600">Score: 35</p>
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Dibrugarh East</p>
+                                        <p class="text-xs text-yellow-600">Score: 32</p>
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded p-2 text-center">
+                                        <p class="font-medium text-yellow-800 text-sm">Wangoi</p>
+                                        <p class="text-xs text-yellow-600">Score: 28</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🟢 Low Risk Blocks (Stable Conditions)</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Shillong</p>
+                                        <p class="text-xs text-green-600">Score: 18</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Sohra</p>
+                                        <p class="text-xs text-green-600">Score: 15</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Majuli</p>
+                                        <p class="text-xs text-green-600">Score: 12</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Mawkyrwat</p>
+                                        <p class="text-xs text-green-600">Score: 8</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Jalukbari</p>
+                                        <p class="text-xs text-green-600">Score: 22</p>
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded p-2 text-center">
+                                        <p class="font-medium text-green-800 text-sm">Katigorah</p>
+                                        <p class="text-xs text-green-600">Score: 19</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-800 mb-3">📊 Risk Assessment Methodology</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p class="font-medium text-blue-700 mb-2">Risk Factors Considered:</p>
+                                        <ul class="text-blue-600 space-y-1">
+                                            <li>• Active disease cases (40% weight)</li>
+                                            <li>• Water quality index (25% weight)</li>
+                                            <li>• Population density (15% weight)</li>
+                                            <li>• Sanitation infrastructure (10% weight)</li>
+                                            <li>• Environmental conditions (10% weight)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-blue-700 mb-2">Risk Score Ranges:</p>
+                                        <ul class="text-blue-600 space-y-1">
+                                            <li>• 🟢 Low Risk: 0-25 points</li>
+                                            <li>• 🟡 Medium Risk: 26-50 points</li>
+                                            <li>• 🟠 High Risk: 51-75 points</li>
+                                            <li>• 🔴 Critical Risk: 76-100 points</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                <h5 class="font-medium text-purple-800 mb-2">📈 Block Risk Summary</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
+                                    <div>
+                                        <p class="text-2xl font-bold text-red-600">3</p>
+                                        <p class="text-red-700">Critical Risk</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-orange-600">4</p>
+                                        <p class="text-orange-700">High Risk</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-yellow-600">6</p>
+                                        <p class="text-yellow-700">Medium Risk</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold text-green-600">6</p>
+                                        <p class="text-green-700">Low Risk</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                communities: {
+                    title: '🏘️ Monitored Communities - Block-wise Details',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-blue-800 mb-2">156 Communities Under Active Monitoring</h4>
+                                <p class="text-blue-700 text-sm">Comprehensive health surveillance network covering urban centers, rural villages, and remote areas across Northeast India.</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏛️ Assam State - Block-wise Community Coverage</h5>
+                                <div class="space-y-4">
+                                    <div class="border-l-4 border-blue-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Kamrup Metropolitan District</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            <div class="bg-blue-50 p-3 rounded border">
+                                                <p class="font-medium text-blue-800">Guwahati City Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Urban Communities: 8</p>
+                                                    <p>• Population: 45,000</p>
+                                                    <p>• Health Workers: 12</p>
+                                                    <p>• Active Members: 156</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Jalukbari Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Rural Villages: 6</p>
+                                                    <p>• Population: 18,500</p>
+                                                    <p>• Health Workers: 4</p>
+                                                    <p>• Active Members: 67</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded border">
+                                                <p class="font-medium text-yellow-800">Dispur Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Mixed Communities: 5</p>
+                                                    <p>• Population: 28,000</p>
+                                                    <p>• Health Workers: 7</p>
+                                                    <p>• Active Members: 89</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-green-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Cachar District (Silchar)</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            <div class="bg-orange-50 p-3 rounded border">
+                                                <p class="font-medium text-orange-800">Silchar Town Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Urban Communities: 7</p>
+                                                    <p>• Population: 52,000</p>
+                                                    <p>• Health Workers: 15</p>
+                                                    <p>• Active Members: 198</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Lakhipur Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Rural Villages: 12</p>
+                                                    <p>• Population: 24,000</p>
+                                                    <p>• Health Workers: 6</p>
+                                                    <p>• Active Members: 78</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Katigorah Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Rural Villages: 9</p>
+                                                    <p>• Population: 16,500</p>
+                                                    <p>• Health Workers: 4</p>
+                                                    <p>• Active Members: 52</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-purple-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Jorhat District</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            <div class="bg-blue-50 p-3 rounded border">
+                                                <p class="font-medium text-blue-800">Jorhat Town Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Urban Communities: 5</p>
+                                                    <p>• Population: 38,000</p>
+                                                    <p>• Health Workers: 9</p>
+                                                    <p>• Active Members: 124</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Teok Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Tea Garden Communities: 8</p>
+                                                    <p>• Population: 22,000</p>
+                                                    <p>• Health Workers: 5</p>
+                                                    <p>• Active Members: 71</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-teal-50 p-3 rounded border">
+                                                <p class="font-medium text-teal-800">Majuli Island Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Riverside Villages: 14</p>
+                                                    <p>• Population: 19,500</p>
+                                                    <p>• Health Workers: 3</p>
+                                                    <p>• Active Members: 43</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🏔️ Other States - Block-wise Community Network</h5>
+                                <div class="space-y-4">
+                                    <div class="border-l-4 border-red-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Manipur - Imphal District</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div class="bg-red-50 p-3 rounded border">
+                                                <p class="font-medium text-red-800">Imphal East Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Urban Communities: 6</p>
+                                                    <p>• Population: 42,000</p>
+                                                    <p>• Health Workers: 11</p>
+                                                    <p>• Active Members: 145</p>
+                                                    <p class="text-red-600 font-medium">High Priority Area</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-yellow-50 p-3 rounded border">
+                                                <p class="font-medium text-yellow-800">Imphal West Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Mixed Communities: 8</p>
+                                                    <p>• Population: 35,000</p>
+                                                    <p>• Health Workers: 8</p>
+                                                    <p>• Active Members: 98</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-teal-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Meghalaya - East Khasi Hills</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <div class="bg-teal-50 p-3 rounded border">
+                                                <p class="font-medium text-teal-800">Shillong Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Hill Station Communities: 4</p>
+                                                    <p>• Population: 32,000</p>
+                                                    <p>• Health Workers: 7</p>
+                                                    <p>• Active Members: 87</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Sohra (Cherrapunji)</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Hill Villages: 6</p>
+                                                    <p>• Population: 14,000</p>
+                                                    <p>• Health Workers: 3</p>
+                                                    <p>• Active Members: 34</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-green-50 p-3 rounded border">
+                                                <p class="font-medium text-green-800">Mawkyrwat Block</p>
+                                                <div class="text-sm mt-1 space-y-1">
+                                                    <p>• Remote Villages: 8</p>
+                                                    <p>• Population: 11,500</p>
+                                                    <p>• Health Workers: 2</p>
+                                                    <p>• Active Members: 28</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-indigo-500 pl-4">
+                                        <h6 class="font-medium text-gray-800 mb-2">Other Northeast States</h6>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                                            <div class="bg-indigo-50 p-3 rounded border">
+                                                <p class="font-medium text-indigo-800">Mizoram Blocks</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Communities: 12</p>
+                                                    <p>• Members: 89</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-purple-50 p-3 rounded border">
+                                                <p class="font-medium text-purple-800">Nagaland Blocks</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Communities: 15</p>
+                                                    <p>• Members: 112</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-pink-50 p-3 rounded border">
+                                                <p class="font-medium text-pink-800">Tripura Blocks</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Communities: 11</p>
+                                                    <p>• Members: 76</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-cyan-50 p-3 rounded border">
+                                                <p class="font-medium text-cyan-800">Arunachal Blocks</p>
+                                                <div class="text-sm mt-1">
+                                                    <p>• Communities: 10</p>
+                                                    <p>• Members: 58</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">📊 Community Classification by Block Type</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded border border-blue-200">
+                                        <div class="text-center">
+                                            <span class="text-3xl">🏙️</span>
+                                            <h6 class="font-medium text-blue-800 mt-2">Urban Blocks</h6>
+                                            <p class="text-2xl font-bold text-blue-600">34</p>
+                                            <div class="text-sm text-blue-700 mt-2 space-y-1">
+                                                <p>• Population: 285,000</p>
+                                                <p>• Health Workers: 67</p>
+                                                <p>• Active Members: 876</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-green-50 p-4 rounded border border-green-200">
+                                        <div class="text-center">
+                                            <span class="text-3xl">🏘️</span>
+                                            <h6 class="font-medium text-green-800 mt-2">Rural Blocks</h6>
+                                            <p class="text-2xl font-bold text-green-600">89</p>
+                                            <div class="text-sm text-green-700 mt-2 space-y-1">
+                                                <p>• Population: 198,000</p>
+                                                <p>• Health Workers: 45</p>
+                                                <p>• Active Members: 567</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-purple-50 p-4 rounded border border-purple-200">
+                                        <div class="text-center">
+                                            <span class="text-3xl">🏔️</span>
+                                            <h6 class="font-medium text-purple-800 mt-2">Hill Blocks</h6>
+                                            <p class="text-2xl font-bold text-purple-600">21</p>
+                                            <div class="text-sm text-purple-700 mt-2 space-y-1">
+                                                <p>• Population: 87,000</p>
+                                                <p>• Health Workers: 18</p>
+                                                <p>• Active Members: 234</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-teal-50 p-4 rounded border border-teal-200">
+                                        <div class="text-center">
+                                            <span class="text-3xl">🌊</span>
+                                            <h6 class="font-medium text-teal-800 mt-2">Riverside Blocks</h6>
+                                            <p class="text-2xl font-bold text-teal-600">12</p>
+                                            <div class="text-sm text-teal-700 mt-2 space-y-1">
+                                                <p>• Population: 45,000</p>
+                                                <p>• Health Workers: 9</p>
+                                                <p>• Active Members: 156</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-800 mb-3">🎯 Block-wise Performance Metrics</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h6 class="font-medium text-gray-700 mb-2">Top Performing Blocks (Coverage %)</h6>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between items-center">
+                                                <span>Shillong Block</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-green-600 h-2 rounded-full" style="width: 98%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-green-600">98%</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span>Majuli Island</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-green-600 h-2 rounded-full" style="width: 96%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-green-600">96%</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span>Jorhat Town</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 94%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-blue-600">94%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h6 class="font-medium text-gray-700 mb-2">Blocks Needing Support</h6>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between items-center">
+                                                <span>Imphal East</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-red-600 h-2 rounded-full" style="width: 72%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-red-600">72%</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span>Bharalumukh</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-orange-600 h-2 rounded-full" style="width: 78%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-orange-600">78%</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span>Silchar Town</span>
+                                                <div class="flex items-center">
+                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                        <div class="bg-yellow-600 h-2 rounded-full" style="width: 82%"></div>
+                                                    </div>
+                                                    <span class="font-medium text-yellow-600">82%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h5 class="font-medium text-green-800 mb-2">📈 Overall Network Statistics</h5>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
+                                    <div>
+                                        <p class="text-3xl font-bold text-blue-600">156</p>
+                                        <p class="text-blue-700">Total Blocks</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-3xl font-bold text-green-600">1,833</p>
+                                        <p class="text-green-700">Active Members</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-3xl font-bold text-purple-600">139</p>
+                                        <p class="text-purple-700">Health Workers</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-3xl font-bold text-orange-600">615,000</p>
+                                        <p class="text-orange-700">Total Population</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                brahmaputra: {
+                    title: '🌊 Brahmaputra River - Water Quality Analysis',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-green-800 mb-2">Status: Good Quality (87/100)</h4>
+                                <p class="text-green-700 text-sm">Water quality meets safety standards for consumption after proper treatment.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Current Parameters</h5>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">pH Level:</span>
+                                            <span class="font-medium text-green-600">7.2 (Optimal)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Turbidity:</span>
+                                            <span class="font-medium text-green-600">2.1 NTU (Good)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">E.coli:</span>
+                                            <span class="font-medium text-green-600">Safe</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Dissolved Oxygen:</span>
+                                            <span class="font-medium text-green-600">8.5 mg/L</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Temperature:</span>
+                                            <span class="font-medium">24°C</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Monitoring Locations</h5>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li>• Guwahati Intake Point</li>
+                                        <li>• Dibrugarh Station</li>
+                                        <li>• Tezpur Monitoring Site</li>
+                                        <li>• Jorhat Water Works</li>
+                                        <li>• North Guwahati Station</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-800 mb-2">📊 7-Day Trend</h5>
+                                <p class="text-blue-700 text-sm mb-2">Water quality has remained consistently good over the past week.</p>
+                                <div class="text-sm text-blue-600">
+                                    <p>• No significant contamination events detected</p>
+                                    <p>• pH levels stable within optimal range</p>
+                                    <p>• Bacterial count well below safety thresholds</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                barak: {
+                    title: '🌊 Barak River - Water Quality Analysis',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-800 mb-2">Status: Moderate Quality (72/100)</h4>
+                                <p class="text-yellow-700 text-sm">Water quality requires enhanced treatment. Close monitoring recommended.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Current Parameters</h5>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">pH Level:</span>
+                                            <span class="font-medium text-yellow-600">6.8 (Acceptable)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Turbidity:</span>
+                                            <span class="font-medium text-yellow-600">4.5 NTU (Moderate)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">E.coli:</span>
+                                            <span class="font-medium text-yellow-600">Monitor</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Dissolved Oxygen:</span>
+                                            <span class="font-medium text-yellow-600">6.2 mg/L</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Temperature:</span>
+                                            <span class="font-medium">26°C</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Monitoring Locations</h5>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li>• Silchar Main Station</li>
+                                        <li>• Cachar District Point</li>
+                                        <li>• Hailakandi Station</li>
+                                        <li>• Karimganj Monitoring</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                                <h5 class="font-medium text-orange-800 mb-2">⚠️ Recommendations</h5>
+                                <ul class="text-orange-700 text-sm space-y-1">
+                                    <li>• Increase water treatment duration</li>
+                                    <li>• Enhanced filtration recommended</li>
+                                    <li>• Regular bacterial testing required</li>
+                                    <li>• Community awareness programs needed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                imphal: {
+                    title: '🌊 Imphal Lake - Water Quality Analysis',
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-800 mb-2">Status: Poor Quality (58/100)</h4>
+                                <p class="text-red-700 text-sm">Water quality below safety standards. Immediate action required.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Current Parameters</h5>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">pH Level:</span>
+                                            <span class="font-medium text-red-600">5.9 (Acidic)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Turbidity:</span>
+                                            <span class="font-medium text-red-600">8.2 NTU (High)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">E.coli:</span>
+                                            <span class="font-medium text-red-600">High Risk</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Dissolved Oxygen:</span>
+                                            <span class="font-medium text-red-600">3.8 mg/L (Low)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Temperature:</span>
+                                            <span class="font-medium">28°C</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-medium text-gray-800 mb-3">Contamination Sources</h5>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li class="text-red-600">• Industrial discharge</li>
+                                        <li class="text-red-600">• Sewage overflow</li>
+                                        <li class="text-red-600">• Agricultural runoff</li>
+                                        <li class="text-red-600">• Solid waste dumping</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h5 class="font-medium text-red-800 mb-2">🚨 Immediate Actions Required</h5>
+                                <ul class="text-red-700 text-sm space-y-1">
+                                    <li>• DO NOT use for drinking without extensive treatment</li>
+                                    <li>• Boil water for minimum 5 minutes</li>
+                                    <li>• Use alternative water sources</li>
+                                    <li>• Report any illness immediately</li>
+                                    <li>• Avoid direct contact with lake water</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-800 mb-2">📋 Remediation Plan</h5>
+                                <p class="text-blue-700 text-sm mb-2">Comprehensive cleanup initiative in progress:</p>
+                                <ul class="text-blue-600 text-sm space-y-1">
+                                    <li>• Industrial discharge regulation enforcement</li>
+                                    <li>• Sewage treatment plant upgrades</li>
+                                    <li>• Community waste management programs</li>
+                                    <li>• Lake ecosystem restoration project</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+            
+            const info = infoData[type];
+            if (info) {
+                title.innerHTML = info.title;
+                content.innerHTML = info.content;
+                modal.style.display = 'flex';
+                modal.classList.add('fade-in');
+            }
+        }
+
+        function closeInfoModal() {
+            const modal = document.getElementById('infoModal');
+            modal.style.display = 'none';
+            modal.classList.remove('fade-in');
+        }
+
+        function showDetailedAnalysis() {
+            const modal = document.getElementById('infoModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            title.innerHTML = '📊 Detailed Water Quality Analysis & Trends';
+            content.innerHTML = `
+                <div class="space-y-8">
+                    <!-- Overview Section -->
+                    <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6">
+                        <h4 class="font-semibold text-gray-800 mb-4">📈 Regional Water Quality Overview</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <p class="text-2xl font-bold text-green-600">85.2</p>
+                                <p class="text-sm text-gray-600">Average WQI</p>
+                                <p class="text-xs text-green-600">↑ 2.3% from last month</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <p class="text-2xl font-bold text-blue-600">156</p>
+                                <p class="text-sm text-gray-600">Monitoring Points</p>
+                                <p class="text-xs text-blue-600">Across 7 states</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <p class="text-2xl font-bold text-orange-600">23</p>
+                                <p class="text-sm text-gray-600">Alert Locations</p>
+                                <p class="text-xs text-orange-600">Require attention</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <p class="text-2xl font-bold text-purple-600">98.5%</p>
+                                <p class="text-sm text-gray-600">Data Coverage</p>
+                                <p class="text-xs text-purple-600">Real-time monitoring</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Charts Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- 6-Month Trend Chart -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h5 class="font-medium text-gray-800 mb-4">📊 6-Month Water Quality Trends</h5>
+                            <canvas id="detailedTrendsChart" width="400" height="250"></canvas>
+                            <div class="mt-4 text-sm text-gray-600">
+                                <p class="mb-2"><strong>Key Insights:</strong></p>
+                                <ul class="space-y-1">
+                                    <li>• Monsoon season (Jun-Sep) shows temporary quality dips</li>
+                                    <li>• Post-monsoon recovery pattern observed</li>
+                                    <li>• Industrial areas show more variation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Parameter Comparison Chart -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h5 class="font-medium text-gray-800 mb-4">🔬 Parameter Analysis by Region</h5>
+                            <canvas id="parameterChart" width="400" height="250"></canvas>
+                            <div class="mt-4 text-sm text-gray-600">
+                                <p class="mb-2"><strong>Parameter Standards:</strong></p>
+                                <ul class="space-y-1">
+                                    <li>• pH: 6.5-8.5 (Optimal)</li>
+                                    <li>• Turbidity: <5 NTU (Good)</li>
+                                    <li>• DO: >6 mg/L (Healthy)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Seasonal Variation Chart -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h5 class="font-medium text-gray-800 mb-4">🌦️ Seasonal Water Quality Patterns</h5>
+                            <canvas id="seasonalChart" width="400" height="250"></canvas>
+                            <div class="mt-4 text-sm text-gray-600">
+                                <p class="mb-2"><strong>Seasonal Impact:</strong></p>
+                                <ul class="space-y-1">
+                                    <li>• Pre-monsoon: Highest quality (Mar-May)</li>
+                                    <li>• Monsoon: Quality challenges (Jun-Sep)</li>
+                                    <li>• Post-monsoon: Gradual improvement (Oct-Feb)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Contamination Sources Chart -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h5 class="font-medium text-gray-800 mb-4">🏭 Contamination Source Analysis</h5>
+                            <canvas id="contaminationChart" width="400" height="250"></canvas>
+                            <div class="mt-4 text-sm text-gray-600">
+                                <p class="mb-2"><strong>Primary Sources:</strong></p>
+                                <ul class="space-y-1">
+                                    <li>• Industrial discharge (35%)</li>
+                                    <li>• Agricultural runoff (28%)</li>
+                                    <li>• Urban sewage (22%)</li>
+                                    <li>• Natural factors (15%)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State-wise Detailed Analysis -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <h5 class="font-medium text-gray-800 mb-4">🗺️ State-wise Water Quality Breakdown</h5>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-medium text-gray-700">State</th>
+                                        <th class="px-4 py-3 text-center font-medium text-gray-700">Avg WQI</th>
+                                        <th class="px-4 py-3 text-center font-medium text-gray-700">Monitoring Points</th>
+                                        <th class="px-4 py-3 text-center font-medium text-gray-700">Critical Areas</th>
+                                        <th class="px-4 py-3 text-center font-medium text-gray-700">Trend</th>
+                                        <th class="px-4 py-3 text-center font-medium text-gray-700">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium">Meghalaya</td>
+                                        <td class="px-4 py-3 text-center text-green-600 font-bold">92.1</td>
+                                        <td class="px-4 py-3 text-center">18</td>
+                                        <td class="px-4 py-3 text-center">0</td>
+                                        <td class="px-4 py-3 text-center text-green-600">↗ +1.2%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Excellent</span></td>
+                                    </tr>
+                                    <tr class="bg-gray-50">
+                                        <td class="px-4 py-3 font-medium">Assam</td>
+                                        <td class="px-4 py-3 text-center text-green-600 font-bold">84.7</td>
+                                        <td class="px-4 py-3 text-center">67</td>
+                                        <td class="px-4 py-3 text-center">8</td>
+                                        <td class="px-4 py-3 text-center text-green-600">↗ +2.1%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Good</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium">Mizoram</td>
+                                        <td class="px-4 py-3 text-center text-green-600 font-bold">88.3</td>
+                                        <td class="px-4 py-3 text-center">12</td>
+                                        <td class="px-4 py-3 text-center">1</td>
+                                        <td class="px-4 py-3 text-center text-yellow-600">→ 0.3%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Good</span></td>
+                                    </tr>
+                                    <tr class="bg-gray-50">
+                                        <td class="px-4 py-3 font-medium">Nagaland</td>
+                                        <td class="px-4 py-3 text-center text-green-600 font-bold">81.9</td>
+                                        <td class="px-4 py-3 text-center">15</td>
+                                        <td class="px-4 py-3 text-center">3</td>
+                                        <td class="px-4 py-3 text-center text-green-600">↗ +1.8%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Good</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium">Tripura</td>
+                                        <td class="px-4 py-3 text-center text-yellow-600 font-bold">76.4</td>
+                                        <td class="px-4 py-3 text-center">11</td>
+                                        <td class="px-4 py-3 text-center">4</td>
+                                        <td class="px-4 py-3 text-center text-green-600">↗ +3.2%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Moderate</span></td>
+                                    </tr>
+                                    <tr class="bg-gray-50">
+                                        <td class="px-4 py-3 font-medium">Manipur</td>
+                                        <td class="px-4 py-3 text-center text-yellow-600 font-bold">71.2</td>
+                                        <td class="px-4 py-3 text-center">23</td>
+                                        <td class="px-4 py-3 text-center">7</td>
+                                        <td class="px-4 py-3 text-center text-red-600">↘ -1.5%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Moderate</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium">Arunachal Pradesh</td>
+                                        <td class="px-4 py-3 text-center text-green-600 font-bold">89.6</td>
+                                        <td class="px-4 py-3 text-center">10</td>
+                                        <td class="px-4 py-3 text-center">0</td>
+                                        <td class="px-4 py-3 text-center text-green-600">↗ +0.8%</td>
+                                        <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Excellent</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Critical Locations Analysis -->
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                        <h5 class="font-medium text-red-800 mb-4">🚨 Critical Water Quality Locations</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg p-4 border border-red-300">
+                                <div class="flex items-center mb-2">
+                                    <span class="text-red-500 text-xl mr-2">🔴</span>
+                                    <h6 class="font-medium text-red-800">Imphal Lake, Manipur</h6>
+                                </div>
+                                <div class="text-sm space-y-1">
+                                    <p class="text-red-700">WQI: 58/100</p>
+                                    <p class="text-red-600">Issues: Industrial pollution, sewage</p>
+                                    <p class="text-red-600">Trend: ↘ Declining (-8.2%)</p>
+                                    <p class="text-red-600">Action: Immediate intervention</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border border-red-300">
+                                <div class="flex items-center mb-2">
+                                    <span class="text-red-500 text-xl mr-2">🔴</span>
+                                    <h6 class="font-medium text-red-800">Bharalumukh, Assam</h6>
+                                </div>
+                                <div class="text-sm space-y-1">
+                                    <p class="text-red-700">WQI: 65/100</p>
+                                    <p class="text-red-600">Issues: Industrial discharge</p>
+                                    <p class="text-red-600">Trend: ↘ Declining (-5.1%)</p>
+                                    <p class="text-red-600">Action: Enhanced monitoring</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border border-orange-300">
+                                <div class="flex items-center mb-2">
+                                    <span class="text-orange-500 text-xl mr-2">🟠</span>
+                                    <h6 class="font-medium text-orange-800">Silchar Town, Assam</h6>
+                                </div>
+                                <div class="text-sm space-y-1">
+                                    <p class="text-orange-700">WQI: 69/100</p>
+                                    <p class="text-orange-600">Issues: River contamination</p>
+                                    <p class="text-orange-600">Trend: → Stable (-0.3%)</p>
+                                    <p class="text-orange-600">Action: Regular monitoring</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Predictive Analysis -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h5 class="font-medium text-blue-800 mb-4">🔮 Predictive Water Quality Forecast</h5>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <canvas id="forecastChart" width="400" height="200"></canvas>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4">
+                                    <h6 class="font-medium text-gray-800 mb-2">📅 Next 30 Days Forecast</h6>
+                                    <ul class="text-sm space-y-2">
+                                        <li class="flex justify-between">
+                                            <span>Week 1:</span>
+                                            <span class="text-green-600 font-medium">Stable (85-87)</span>
+                                        </li>
+                                        <li class="flex justify-between">
+                                            <span>Week 2:</span>
+                                            <span class="text-yellow-600 font-medium">Slight decline (82-85)</span>
+                                        </li>
+                                        <li class="flex justify-between">
+                                            <span>Week 3:</span>
+                                            <span class="text-yellow-600 font-medium">Monsoon impact (78-82)</span>
+                                        </li>
+                                        <li class="flex justify-between">
+                                            <span>Week 4:</span>
+                                            <span class="text-green-600 font-medium">Recovery (83-86)</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white rounded-lg p-4">
+                                    <h6 class="font-medium text-gray-800 mb-2">⚠️ Risk Factors</h6>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• Monsoon season approaching</li>
+                                        <li>• Industrial activity increase</li>
+                                        <li>• Agricultural runoff season</li>
+                                        <li>• Temperature rise effects</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <h5 class="font-medium text-green-800 mb-4">💡 Actionable Recommendations</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h6 class="font-medium text-gray-800 mb-3">🎯 Immediate Actions (0-30 days)</h6>
+                                <ul class="text-sm space-y-2">
+                                    <li class="flex items-start">
+                                        <span class="text-red-500 mr-2">•</span>
+                                        <span>Deploy emergency water treatment units in Imphal</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-orange-500 mr-2">•</span>
+                                        <span>Increase monitoring frequency in critical areas</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 mr-2">•</span>
+                                        <span>Launch community awareness campaigns</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">•</span>
+                                        <span>Implement industrial discharge controls</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 class="font-medium text-gray-800 mb-3">📈 Long-term Strategy (3-12 months)</h6>
+                                <ul class="text-sm space-y-2">
+                                    <li class="flex items-start">
+                                        <span class="text-purple-500 mr-2">•</span>
+                                        <span>Upgrade sewage treatment infrastructure</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-indigo-500 mr-2">•</span>
+                                        <span>Establish regional water quality labs</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-teal-500 mr-2">•</span>
+                                        <span>Implement watershed management programs</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-cyan-500 mr-2">•</span>
+                                        <span>Develop early warning systems</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            modal.classList.add('fade-in');
+            
+            // Initialize detailed charts after modal is shown
+            setTimeout(() => {
+                initializeDetailedCharts();
+            }, 100);
+        }
+
+        function initializeDetailedCharts() {
+            // 6-Month Trends Chart
+            const trendsCtx = document.getElementById('detailedTrendsChart');
+            if (trendsCtx) {
+                new Chart(trendsCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Assam',
+                            data: [82, 84, 87, 85, 89, 84],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Manipur',
+                            data: [75, 73, 76, 74, 78, 71],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Meghalaya',
+                            data: [90, 91, 93, 92, 94, 92],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 60,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Parameter Analysis Chart
+            const parameterCtx = document.getElementById('parameterChart');
+            if (parameterCtx) {
+                new Chart(parameterCtx.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['pH Level', 'Turbidity', 'Dissolved Oxygen', 'E.coli', 'Temperature', 'Conductivity'],
+                        datasets: [{
+                            label: 'Assam Average',
+                            data: [85, 78, 82, 88, 75, 80],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        }, {
+                            label: 'Manipur Average',
+                            data: [72, 65, 68, 58, 70, 75],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        }, {
+                            label: 'Meghalaya Average',
+                            data: [92, 88, 95, 94, 85, 90],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Seasonal Patterns Chart
+            const seasonalCtx = document.getElementById('seasonalChart');
+            if (seasonalCtx) {
+                new Chart(seasonalCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Pre-Monsoon', 'Monsoon', 'Post-Monsoon', 'Winter'],
+                        datasets: [{
+                            label: 'Average WQI',
+                            data: [88, 72, 81, 86],
+                            backgroundColor: [
+                                '#10b981',
+                                '#f59e0b',
+                                '#3b82f6',
+                                '#8b5cf6'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 60,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Contamination Sources Chart
+            const contaminationCtx = document.getElementById('contaminationChart');
+            if (contaminationCtx) {
+                new Chart(contaminationCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Industrial Discharge', 'Agricultural Runoff', 'Urban Sewage', 'Natural Factors'],
+                        datasets: [{
+                            data: [35, 28, 22, 15],
+                            backgroundColor: [
+                                '#ef4444',
+                                '#f59e0b',
+                                '#8b5cf6',
+                                '#10b981'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Forecast Chart
+            const forecastCtx = document.getElementById('forecastChart');
+            if (forecastCtx) {
+                new Chart(forecastCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Current', 'Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [{
+                            label: 'Predicted WQI',
+                            data: [85, 86, 83, 80, 84],
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Confidence Range (Upper)',
+                            data: [85, 89, 87, 85, 88],
+                            borderColor: 'rgba(139, 92, 246, 0.3)',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }, {
+                            label: 'Confidence Range (Lower)',
+                            data: [85, 83, 79, 75, 80],
+                            borderColor: 'rgba(139, 92, 246, 0.3)',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 70,
+                                max: 95
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('infoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeInfoModal();
+            }
+        });
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            showLogin();
+        });
+
+        // Add some interactive features
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('card-hover')) {
+                e.target.style.transform = 'translateY(-2px)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 200);
+            }
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            if (currentUser && currentSection === 'dashboard') {
+                // Update some metrics randomly
+                const waterQuality = Math.floor(Math.random() * 10) + 80;
+                const activeCases = Math.floor(Math.random() * 10) + 20;
+                
+                document.getElementById('waterQuality').textContent = waterQuality;
+                document.getElementById('activeCases').textContent = activeCases;
+            }
+        }, 30000); // Update every 30 seconds
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97ede008109c7f10',t:'MTc1NzgzMTg0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
